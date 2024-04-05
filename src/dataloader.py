@@ -73,7 +73,7 @@ class ScrewdrivingDataset(Dataset):
                 # TODO: append the derivate of the position data to y here
 
     def __len__(self):
-        return 0
+        return len(self._y)
 
-    def __getitem__(self, item):
-        return None
+    def __getitem__(self, idx):
+        return [self._X[idx], self._y[idx]]
