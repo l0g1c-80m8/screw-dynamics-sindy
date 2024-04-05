@@ -8,30 +8,36 @@ class ScrewdrivingDataset(Dataset):
     _WINDOW_LENGTH = 200
     _STIFFNESS_NORM = [3000, 3000, 3000, 300, 300, 300]
 
-    def __init__(self, data_dir, file_ext):
+    def __init__(self, data_dir, file_ext, sensor_file, observation_file):
         super().__init__()
 
         self._X = []
         self._y = []
         self._data_dir = data_dir
-        self._file_ext = file_ext
+        self._sensor_file = sensor_file
+        self._observation_file = observation_file
 
         # read data
         self._init_data()
 
     def _init_data(self):
         for dir_item in os.listdir(self._data_dir):
-            dir_item_path = os.path.join(self._data_dir, dir_item)
+            subdir_path = os.path.join(self._data_dir, dir_item)
 
-            if os.path.isdir(dir_item_path):
+            if not os.path.isdir(subdir_path):
                 continue
-            if not dir_item_path.endswith(self._file_ext):
+
+            sensor_file = os.path.join(subdir_path, self._sensor_file)
+            observation_file = os.path.join(subdir_path, self._observation_file)
+
+            if not os.path.exists(sensor_file) or not os.path.exists(observation_file):
                 continue
 
             # read in sensor data in a pd data frame and process it into chunks of _WINDOW_LENGTH
-            sensor_data_df = pd.read_csv(dir_item_path)
+            sensor_data_df = pd.read_csv(sensor_file)
+            observation_data_df = pd.read_csv(observation_file)
 
-            if sensor_data_df.shape[0] < self._WINDOW_LENGTH:
+            if sensor_data_df.shape[0] < self._WINDOW_LENGTH or observation_data_df.shape[0] < self._WINDOW_LENGTH:
                 continue
 
             for idx in range(sensor_data_df.shape[0] // self._WINDOW_LENGTH):
