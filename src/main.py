@@ -13,6 +13,8 @@ def get_args():
                         action='store', dest='data_dir', help='data directory')
     parser.add_argument('--file_ext', type=str, default='csv',
                         action='store', dest='file_ext', help='data directory')
+    # parser.add_argument('--sensor_file_prefix', type=str, default='csv',
+    #                     action='store', dest='file_ext', help='data directory')
 
     # return parsed arguments
     return parser.parse_args()
