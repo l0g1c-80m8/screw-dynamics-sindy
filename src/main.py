@@ -11,10 +11,10 @@ def get_args():
     # set args
     parser.add_argument('--data_dir', type=str, default='./data',
                         action='store', dest='data_dir', help='data directory')
-    parser.add_argument('--file_ext', type=str, default='csv',
-                        action='store', dest='file_ext', help='data directory')
-    # parser.add_argument('--sensor_file_prefix', type=str, default='csv',
-    #                     action='store', dest='file_ext', help='data directory')
+    parser.add_argument('--sensor_file', type=str, default='sensor_data.csv',
+                        action='store', dest='sensor_file', help='sensor file name')
+    parser.add_argument('--observation_file', type=str, default='observation_data.csv',
+                        action='store', dest='observation_file', help='observation file name')
 
     # return parsed arguments
     return parser.parse_args()
