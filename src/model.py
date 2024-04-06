@@ -8,7 +8,7 @@ from sklearn.preprocessing import PolynomialFeatures
 class SindyModel(nn.Module):
     _COFF_KEY = 'sindy_coefficients'
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(*args, **kwargs)
 
         self._params = Namespace(**kwargs)
