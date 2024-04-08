@@ -44,7 +44,11 @@ class ScrewdrivingDataset(Dataset):
                 s_idx = idx * self._WINDOW_LENGTH
                 e_idx = s_idx + self._WINDOW_LENGTH
 
-                # TODO: extract X, Y, Z data from camera and read it here
+                state_data = np.column_stack((
+                    np.asarray(observation_data_df[s_idx:e_idx]['X'], dtype=np.float32),
+                    np.asarray(observation_data_df[s_idx:e_idx]['Y'], dtype=np.float32),
+                    np.asarray(observation_data_df[s_idx:e_idx]['Z'], dtype=np.float32),
+                ))
 
                 orientation_data = np.column_stack((
                     np.asarray(sensor_data_df['A'][s_idx:e_idx], dtype=np.float32) / np.pi,
@@ -71,12 +75,11 @@ class ScrewdrivingDataset(Dataset):
                 ))
 
                 self._X.append(np.column_stack((
-                    # TODO: append the position data here
-                    orientation_data,
-                    stiffness_data,
-                    damping_data
+                    orientation_data,  # input variable (X)
+                    stiffness_data,  # control variable (U)
+                    damping_data  # control variable (U)
                 )))
-                # TODO: append the derivate of the position data to y here
+                self._y.append(state_data)  # state variable
 
     def __len__(self):
         return len(self._y)
