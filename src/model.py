@@ -12,21 +12,20 @@ class SindyModel(nn.Module):
         super().__init__(**kwargs)
 
         self._params = Namespace(**kwargs)
+        self._library_dim = None
 
         self._model_params = torch.nn.ParameterDict({
-            self._COFF_KEY: torch.nn.Parameter(torch.empty(self._params.library_dim, self._params.state_var_dim))
+            self._COFF_KEY: torch.nn.Parameter(torch.empty(self.library_dim, self._params.state_var_dim))
         })
         torch.nn.init.xavier_uniform_(self._model_params[self._COFF_KEY])
 
         self._coefficient_mask = torch.ones(
-            (self._params.library_dim, self._params.state_var_dim),
+            (self.library_dim, self._params.state_var_dim),
             device=self._params.device,
             dtype=torch.float32
         )
 
         self._Theta = PolynomialFeatures(self._params.poly_order)
-
-        self._library_dim = None
 
     @property
     def library_dim(self):
