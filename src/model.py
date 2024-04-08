@@ -9,7 +9,7 @@ class SindyModel(nn.Module):
     _COFF_KEY = 'sindy_coefficients'
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__()
 
         self._params = Namespace(**kwargs)
         self._library_dim = None
