@@ -53,3 +53,6 @@ class Trainer:
             print('loss: {}'.format(current_train_loss / len(train_data_loader.dataset)))
 
             self._model.eval()
+
+    def evaluate(self):
+        pass

@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from src.dataloader import ScrewdrivingDataset
+from src.trainer import Trainer
 
 
 def get_args():
@@ -21,7 +21,9 @@ def get_args():
 
 
 def main():
-    ScrewdrivingDataset(**vars(ARGS))
+    trainer = Trainer()
+    trainer.train()
+    trainer.evaluate()
 
 
 if __name__ == '__main__':
