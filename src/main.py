@@ -15,13 +15,31 @@ def get_args():
                         action='store', dest='sensor_file', help='sensor file name')
     parser.add_argument('--observation_file', type=str, default='observation_data.csv',
                         action='store', dest='observation_file', help='observation file name')
+    parser.add_argument('--poly_order', type=int, default=3,
+                        action='store', dest='poly_order', help='highest polynomial order in sindy library')
+    parser.add_argument('--include_constant', type=bool, default=True,
+                        action='store', dest='include_constant', help='include constant function in sindy library')
+    parser.add_argument('--use_sine', type=bool, default=True,
+                        action='store', dest='use_sine', help='use sine function in sindy library')
+    parser.add_argument('--input_var_dim', type=int, default=15,
+                        action='store', dest='input_var_dim', help='dimension of input variable')
+    parser.add_argument('--state_var_dim', type=int, default=3,
+                        action='store', dest='state_var_dim', help='dimension of state variable')
+    parser.add_argument('--device', type=str, default='cuda',
+                        action='store', dest='device', help='device to run operations on')
+    parser.add_argument('--learning_rate', type=float, default=.01,
+                        action='store', dest='learning_rate', help='learning rate for training')
+    parser.add_argument('--weight_decay', type=float, default=.000001,
+                        action='store', dest='weight_decay', help='weight decay for training')
+    parser.add_argument('--epochs', type=int, default=100,
+                        action='store', dest='epochs', help='epochs for training')
 
     # return parsed arguments
     return parser.parse_args()
 
 
 def main():
-    trainer = Trainer()
+    trainer = Trainer(**vars(ARGS))
     trainer.train()
     trainer.evaluate()
 
