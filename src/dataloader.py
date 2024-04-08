@@ -8,7 +8,7 @@ class ScrewdrivingDataset(Dataset):
     _WINDOW_LENGTH = 200
     _STIFFNESS_NORM = [3000, 3000, 3000, 300, 300, 300]
 
-    def __init__(self, data_dir, sensor_file, observation_file):
+    def __init__(self, data_dir, sensor_file, observation_file, **kwargs):
         super().__init__()
 
         self._X = []
