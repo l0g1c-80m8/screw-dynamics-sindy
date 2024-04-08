@@ -16,8 +16,8 @@ class Trainer:
 
         self._optimizer = torch.optim.Adam(
             params=self._model.parameters(),
-            lr=self._params.training.learning_rate,
-            weight_decay=self._params.training.weight_decay
+            lr=self._params.learning_rate,
+            weight_decay=self._params.weight_decay
         )
         self._loss = torch.nn.MSELoss()
 
@@ -29,7 +29,7 @@ class Trainer:
         self._model.to(torch.device("cuda"))
         self._model.get_latent_params = True
 
-        for epoch in range(self._params.training.epochs):
+        for epoch in range(self._params.epochs):
             print('training epoch: {}'.format(epoch + 1))
 
             self._model.train()
