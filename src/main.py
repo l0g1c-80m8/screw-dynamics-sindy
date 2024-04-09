@@ -33,6 +33,12 @@ def get_args():
                         action='store', dest='weight_decay', help='weight decay for training')
     parser.add_argument('--epochs', type=int, default=100,
                         action='store', dest='epochs', help='epochs for training')
+    parser.add_argument('--train_dataset_subdir', type=str, default='train',
+                        action='store', dest='train_dataset_subdir', help='subdirectory for training dataset')
+    parser.add_argument('--test_dataset_subdir', type=str, default='test',
+                        action='store', dest='test_dataset_subdir', help='subdirectory for testing dataset')
+    parser.add_argument('--val_dataset_subdir', type=str, default='val',
+                        action='store', dest='val_dataset_subdir', help='subdirectory for validation dataset')
 
     # return parsed arguments
     return parser.parse_args()
