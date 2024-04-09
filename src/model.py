@@ -42,7 +42,7 @@ class SindyModel(nn.Module):
         return self._library_dim
 
     def forward(self, x):
-        x_dot_batch = torch.Tensor(size=(*x.shape, self._params.state_var_dim))
+        x_dot_batch = torch.Tensor(size=(*x.shape[:2], self._params.state_var_dim))
 
         for idx in range(x_dot_batch.shape[0]):
             x_idx = x[idx].detach().cpu().numpy()
