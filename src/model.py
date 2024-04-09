@@ -53,3 +53,7 @@ class SindyModel(nn.Module):
             x_dot_batch[idx] = torch.matmul(theta_idx, self._coefficient_mask * self._model_params[self._COFF_KEY])
 
         return x_dot_batch.to(self._params.device)
+
+    @property
+    def coefficients(self):
+        return self._model_params[self._COFF_KEY]
