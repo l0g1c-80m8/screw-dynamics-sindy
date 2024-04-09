@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import pandas as pd
+from argparse import Namespace
 from torch.utils.data import Dataset
 
 
@@ -8,12 +9,12 @@ class ScrewdrivingDataset(Dataset):
     _WINDOW_LENGTH = 200
     _STIFFNESS_NORM = [3000, 3000, 3000, 300, 300, 300]
 
-    def __init__(self, data_dir, sensor_file, observation_file, **kwargs):
+    def __init__(self, data_dir, sensor_file, observation_file, mode='train', **kwargs):
         super().__init__()
 
         self._X = []
         self._y = []
-        self._data_dir = data_dir
+        self._data_dir = os.path.join(data_dir, kwargs.get('{}_dataset_subdir'.format(mode), ''))
         self._sensor_file = sensor_file
         self._observation_file = observation_file
 
