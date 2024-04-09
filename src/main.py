@@ -25,7 +25,7 @@ def get_args():
                         action='store', dest='input_var_dim', help='dimension of input variable')
     parser.add_argument('--state_var_dim', type=int, default=3,
                         action='store', dest='state_var_dim', help='dimension of state variable')
-    parser.add_argument('--device', type=str, default='cuda',
+    parser.add_argument('--device', type=str, default='cpu',
                         action='store', dest='device', help='device to run operations on')
     parser.add_argument('--learning_rate', type=float, default=.01,
                         action='store', dest='learning_rate', help='learning rate for training')
