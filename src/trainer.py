@@ -26,7 +26,7 @@ class Trainer:
     def train(self):
         train_data_loader = DataLoader(self._dataset_obj)
 
-        self._model.to(torch.device("cuda"))
+        self._model.to(torch.device(self._params.device))
         self._model.get_latent_params = True
 
         for epoch in range(self._params.epochs):
