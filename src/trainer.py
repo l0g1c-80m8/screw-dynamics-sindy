@@ -68,4 +68,11 @@ class Trainer:
             self._model.eval()
 
     def evaluate(self):
-        pass
+        test_data_loader = DataLoader(self._test_dataset_obj)
+        x, x_dot = next(iter(test_data_loader))
+        self._model.eval()
+        print('Coefficients: {}'.format(self._model.coefficients))
+
+        pred_x_dot = self._model(x)
+
+        # TODO: do something with the predicted values
