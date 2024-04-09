@@ -50,6 +50,6 @@ class SindyModel(nn.Module):
             theta_idx = theta_idx.to(torch.device(self._params.device))
             if self._params.use_sine:
                 theta_idx = torch.hstack((theta_idx, torch.sin(x[idx])))
-            x_dot_batch[idx] = torch.matmul(theta_idx, self.coefficient_mask * self._model_params[self._COFF_KEY])
+            x_dot_batch[idx] = torch.matmul(theta_idx, self._coefficient_mask * self._model_params[self._COFF_KEY])
 
         return x_dot_batch.to(self._params.device)
