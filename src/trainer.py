@@ -27,6 +27,7 @@ class Trainer:
 
     def train(self):
         train_data_loader = DataLoader(self._train_dataset_obj)
+        val_data_loader = DataLoader(self._val_dataset_obj)
 
         self._model.to(torch.device(self._params.device))
         self._model.get_latent_params = True
@@ -52,7 +53,17 @@ class Trainer:
                 self._optimizer.step()
                 current_train_loss += train_loss.item()
 
-            print('loss: {}'.format(current_train_loss / len(train_data_loader.dataset)))
+            print('training loss: {}'.format(current_train_loss / len(train_data_loader.dataset)))
+
+            for batch, (x, x_dot) in enumerate(val_data_loader):
+                self._optimizer.zero_grad()
+                pred_x_dot = self._model(x)
+
+                x_dot = x_dot.to(torch.device(self._params.device))
+                train_loss = self._loss(x_dot, pred_x_dot)
+                current_val_loss += train_loss.item()
+
+            print('validation loss: {}'.format(current_train_loss / len(val_data_loader.dataset)))
 
             self._model.eval()
 
