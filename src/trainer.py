@@ -21,10 +21,12 @@ class Trainer:
         )
         self._loss = torch.nn.MSELoss()
 
-        self._dataset_obj = ScrewdrivingDataset(**kwargs)
+        self._train_dataset_obj = ScrewdrivingDataset(mode='train', **kwargs)
+        self._test_dataset_obj = ScrewdrivingDataset(mode='test', **kwargs)
+        self._val_dataset_obj = ScrewdrivingDataset(mode='val', **kwargs)
 
     def train(self):
-        train_data_loader = DataLoader(self._dataset_obj)
+        train_data_loader = DataLoader(self._train_dataset_obj)
 
         self._model.to(torch.device(self._params.device))
         self._model.get_latent_params = True
