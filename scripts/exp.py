@@ -316,7 +316,7 @@ def rotate_quaternion_z(quat: geometry_msgs.msg.Quaternion, deg: int):
 
 if __name__ == "__main__":
     if test:
-        rospy.init_node("waypoints_plan_execute", anonymous=True)
+        rospy.init_node("experiment", anonymous=True)
 
         orange_hover = getPose_msg(projectPose(nominal_hole, [0, 0.07, 0]))
         orange_screw_hole = getPose_msg(nominal_hole)
@@ -421,5 +421,5 @@ if __name__ == "__main__":
 #   set the flag to true to execute on the real robot.
 # 5. On another window, run `rosrun camera_node camera_capture`
 # 6. On another window, run `rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0`
-# 7. Finally, run `rosrun iiwa_cam waypoints_plan_execute.py`
+# 7. Finally, run `rosrun iiwa_cam experiment.py`
 
