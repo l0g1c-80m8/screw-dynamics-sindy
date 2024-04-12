@@ -443,3 +443,14 @@ if __name__ == "__main__":
 
         response = get_traj_plan_test([orange_hover], 0.1, 2000)
         get_traj_exec(response.general_traj)
+
+# INSTRUCTIONS TO RUN THE SCRIPT
+# 1. Open 5 terminal windows. In each of the window, run `source devel/setup.bash` file
+# 2. In one window run `roscore` and always keep it running.
+# 3. On the KUKA pendant, switch to auto mode, and select the ROS Smart Servo application and press the play button.
+# 4. On one of the terminal windows, run `roslaunch iiwa_cam moveit_kuka_pipeline.launch real_robot_execution:=false`
+#   set the flag to true to execute on the real robot.
+# 5. On another window, run `rosrun camera_node camera_capture`
+# 6. On another window, run `rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0`
+# 7. Finally, run `rosrun iiwa_cam waypoints_plan_execute.py`
+
