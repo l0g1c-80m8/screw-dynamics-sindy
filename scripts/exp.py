@@ -317,37 +317,6 @@ def rotate_quaternion_z(quat: geometry_msgs.msg.Quaternion, deg: int):
 if __name__ == "__main__":
     if test:
         rospy.init_node("waypoints_plan_execute", anonymous=True)
-        # new terminal
-        # roscore
-        # Move key to lock and check in auto mode. Make sure e-stop disengaged.
-        # start the ROSSmartServo application on pendant (unless just running sim)
-        # Press play on pendant
-
-        # new terminal
-        # cd /home/other/iiwa_screwdriving_package/catkin_ws
-        # source devel/setup.zsh
-        # roslaunch iiwa_cam moveit_kuka_pipeline.launch real_robot_execution:=false
-        # *(true if running robot)
-
-        # cd /home/other/iiwa_screwdriving_package
-        # ./install.sh
-        # *(moves files into workspace that is gitignored)
-        # cd catkin_ws
-        # source devel/setup.zsh
-        #  cd .. && ./install.sh && cd catkin_ws && source devel/setup.zsh
-        # rosrun iiwa_cam waypoints_plan_execute.py
-
-        # To get live waypoint: run with real_robot_execution:=true
-        # In RViz. Add-TF. Unselect all. Add iiwa_orange_gripper_ee
-
-        # poses = generate_poses(waypoints_go_back)
-        # poses = generate_poses(waypoints)
-
-        # Update nominal hole location as needed (if moving robot or using new hole)
-        # poses = generate_poses(nominal_waypoint)
-
-        # test_hole_location=uniform_sampling_around_hole(nominal_hole_location,trial_num)
-        # test_plunge_location=project_backwards_by_distance(nominal_hole_location,trial_num)
 
         orange_hover = getPose_msg(projectPose(nominal_hole, [0, 0.07, 0]))
         orange_screw_hole = getPose_msg(nominal_hole)
