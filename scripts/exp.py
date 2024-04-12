@@ -103,13 +103,13 @@ def safe_getattr(obj, attr_chain, default=None):
 
 
 def get_traj_plan(
-    robot_name,
-    robot_poses,
-    robot_stiffness,
-    robot_speed,
-    wait_execution_finished=True,
-    dumy_idx=-1,
-    pre_record=False,
+        robot_name,
+        robot_poses,
+        robot_stiffness,
+        robot_speed,
+        wait_execution_finished=True,
+        dumy_idx=-1,
+        pre_record=False,
 ):
     rospy.wait_for_service("general_plan")
 
@@ -315,7 +315,7 @@ def rotate_quaternion_z(quat: geometry_msgs.msg.Quaternion, deg: int):
 
 
 if __name__ == "__main__":
-    if test == True:
+    if test:
         rospy.init_node("waypoints_plan_execute", anonymous=True)
         # new terminal
         # roscore
@@ -417,18 +417,18 @@ if __name__ == "__main__":
         data_recorder.thread.join()
 
         data_store_file = (
-            trial_screw
-            + "_"
-            + str(ring_num)
-            + "_"
-            + str(offset_deg)
-            + "_"
-            + str(offset_orientation)
-            + "_"
-            + success
+                trial_screw
+                + "_"
+                + str(ring_num)
+                + "_"
+                + str(offset_deg)
+                + "_"
+                + str(offset_orientation)
+                + "_"
+                + success
         )
         if success == "1":
-            data_store_file += "_" + str(round((end_time - start_time) / 10**9, 3))
+            data_store_file += "_" + str(round((end_time - start_time) / 10 ** 9, 3))
 
         data_store_file += ".csv"
         write_data_to_file(data_recorder.recorded_data, data_store_file)
