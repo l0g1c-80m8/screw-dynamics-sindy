@@ -321,9 +321,8 @@ def rotate_quaternion_z(quat: geometry_msgs.msg.Quaternion, deg: int):
 
 
 if __name__ == "__main__":
+    rospy.init_node("experiment", anonymous=True)
     if test:
-        rospy.init_node("experiment", anonymous=True)
-
         orange_hover = getPose_msg(projectPose(nominal_pose, [0, 0.07, 0]))
         orange_screw_hole = getPose_msg(nominal_pose)
         orange_screw_plunge = getPose_msg(projectPose(nominal_pose, [0, -0.01, 0]))
