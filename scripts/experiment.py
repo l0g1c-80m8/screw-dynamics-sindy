@@ -31,6 +31,7 @@ test = False  # Just run test screwdriving, no data capture
 
 nominal_pose = [0.82352, -0.1634, 0.3095, 0.31629, 0.31504, 0.63268, 0.63279]
 
+_PLUNGE_STIFFNESS = 1500
 
 def get_traj_exec(request):
     rospy.wait_for_service("general_execution")
@@ -121,6 +122,8 @@ def get_traj_plan(
 
 
 class Worker:
+    _DAMPING = (.7, .7, .7)
+
     def __init__(self):
         self.running = True
         self._recorded_data = list()
@@ -183,7 +186,19 @@ class Worker:
                     safe_getattr(current_state, ["wrenches", -1, "force", "z"]),
                     safe_getattr(current_state, ["wrenches", -1, "torque", "x"]),
                     safe_getattr(current_state, ["wrenches", -1, "torque", "y"]),
-                    safe_getattr(current_state, ["wrenches", -1, "torque", "z"])
+                    safe_getattr(current_state, ["wrenches", -1, "torque", "z"]),
+                    self._DAMPING[0],  # Cx
+                    self._DAMPING[1],  # Cy
+                    self._DAMPING[2],  # Cz
+                    self._DAMPING[0],  # Rot_Cx
+                    self._DAMPING[1],  # Rot_Cy
+                    self._DAMPING[2],  # Rot_Cz
+                    _PLUNGE_STIFFNESS,  # Kx
+                    _PLUNGE_STIFFNESS,  # Ky
+                    _PLUNGE_STIFFNESS,  # Kz
+                    _PLUNGE_STIFFNESS,  # Rot_Kx
+                    _PLUNGE_STIFFNESS,  # Rot_Ky
+                    _PLUNGE_STIFFNESS,  # Rot_Kz
                 ]
             )
 
@@ -335,7 +350,7 @@ if __name__ == "__main__":
         orange_screw_plunge.orientation = rotate_quaternion_z(orange_screw_plunge.orientation, 0)
 
         home_to_hover_traj = get_traj_plan_test([orange_hover], 0.1, 2000)
-        hover_to_plunge_traj = get_traj_plan_test([orange_screw_plunge], 0.05, 1500)
+        hover_to_plunge_traj = get_traj_plan_test([orange_screw_plunge], 0.05, _PLUNGE_STIFFNESS)
         get_traj_exec(home_to_hover_traj.general_traj)
 
         # start camera
