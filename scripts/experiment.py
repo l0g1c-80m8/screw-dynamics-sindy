@@ -28,7 +28,7 @@ from iiwa_cam.srv import GeneralPlan
 from iiwa_msgs.msg import JointPositionVelocity
 
 ##############################
-store_folder = "/home/other/Desktop/screwdriver_exp/sensor_single"  ## Fix me
+store_folder = "/home/other/Desktop/screwdriver_exp/sensor_single"  # Fix me
 
 test = False  # Just run test screwdriving, no data capture
 
@@ -36,6 +36,7 @@ nominal_pose = [0.82352, -0.1634, 0.3095, 0.31629, 0.31504, 0.63268, 0.63279]
 home_pose = [0.4, 0.0, 0.0, 0., 0., 0., 1.]
 
 _PLUNGE_STIFFNESS = 1500
+
 
 def get_traj_exec(request):
     rospy.wait_for_service("general_execution")
