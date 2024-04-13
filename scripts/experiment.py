@@ -12,6 +12,7 @@ import csv
 import threading
 import time
 from datetime import datetime
+import transforms3d as t3d
 
 import geometry_msgs.msg
 import matplotlib.pyplot as plt
@@ -136,6 +137,12 @@ class Worker:
     def joint_position_velocity_callback(self, data):
         self.joint_position_velocity = data
 
+    @staticmethod
+    def quaternion_to_euler(x, y, z, w):
+        q = np.array([x, y, z, w])
+        rotation_matrix = t3d.quaternions.quat2mat(q)
+        return t3d.euler.mat2euler(rotation_matrix, 'sxyz')C
+
     def store_data_to_object(self):
         rospy.wait_for_service("/cam/iiwa/EndEffectorState")
         state_node = rospy.ServiceProxy("/cam/iiwa/EndEffectorState", EndEffectorState)
@@ -148,16 +155,23 @@ class Worker:
             time.sleep(0.01)
 
             current_state = state_node("iiwa_orange")
+
+            a, b, c = self.quaternion_to_euler(
+                safe_getattr(current_state, ["pose", "orientation", "x"]),
+                safe_getattr(current_state, ["pose", "orientation", "y"]),
+                safe_getattr(current_state, ["pose", "orientation", "z"]),
+                safe_getattr(current_state, ["pose", "orientation", "w"]),
+            )
+
             self._recorded_data.append(
                 [
                     datetime.now(),
                     safe_getattr(current_state, ["pose", "position", "x"]),
                     safe_getattr(current_state, ["pose", "position", "y"]),
                     safe_getattr(current_state, ["pose", "position", "z"]),
-                    safe_getattr(current_state, ["pose", "orientation", "x"]),
-                    safe_getattr(current_state, ["pose", "orientation", "y"]),
-                    safe_getattr(current_state, ["pose", "orientation", "z"]),
-                    safe_getattr(current_state, ["pose", "orientation", "w"]),
+                    a,
+                    b,
+                    c,
                     safe_getattr(current_state, ["velocity", "linear", "x"]),
                     safe_getattr(current_state, ["velocity", "linear", "y"]),
                     safe_getattr(current_state, ["velocity", "linear", "z"]),
@@ -192,10 +206,9 @@ def write_data_to_file(recorded_data, file_name):
                 "X",
                 "Y",
                 "Z",
-                "x",
-                "y",
-                "z",
-                "w",
+                "A",
+                "B",
+                "C",
                 "Vx",
                 "Vy",
                 "Vz",
