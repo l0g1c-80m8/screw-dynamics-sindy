@@ -221,6 +221,18 @@ def write_data_to_file(recorded_data, file_name):
                 "tx",
                 "ty",
                 "tz",
+                "Cx",
+                "Cy",
+                "Cz",
+                "Rot_Cx",
+                "Rot_Cy",
+                "Rot_Cz",
+                "Kx",
+                "Ky",
+                "Kz",
+                "Rot_Kx",
+                "Rot_Ky",
+                "Rot_Kz",
             ]
         )
 
