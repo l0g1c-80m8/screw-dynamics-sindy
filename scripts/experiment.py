@@ -29,14 +29,6 @@ store_folder = "/home/other/Desktop/screwdriver_exp/sensor_single"  ## Fix me
 test = False  # Just run test screwdriving, no data capture
 
 nominal_hole = [0.82352, -0.1634, 0.3095, 0.31629, 0.31504, 0.63268, 0.63279]
-static_offset = [
-    3.914695198,
-    -0.3579985943,
-    -7.03114873,
-    -1.519546672,
-    0.4173471108,
-    -0.9741524884,
-]
 
 
 def get_traj_exec(request):
@@ -156,12 +148,6 @@ class Worker:
             time.sleep(0.01)
 
             current_state = state_node("iiwa_orange")
-            # transforms = [tf_buffer.lookup_transform("robot_origin/base_link", "bucket_SC/base_link", rospy.Time(0)).transform]
-            # joint_position_velocity = rospy.wait_for_message("/iiwa_blue/state/JointPositionVelocity", JointPositionVelocity)
-
-            # Fetch the most recent JointPositionVelocity message from the class attribute updated by the subscriber callback
-            joint_position_velocity = self.joint_position_velocity
-
             self._recorded_data.append(
                 [
                     datetime.now(),
@@ -184,7 +170,6 @@ class Worker:
                     safe_getattr(current_state, ["wrenches", -1, "torque", "x"]),
                     safe_getattr(current_state, ["wrenches", -1, "torque", "y"]),
                     safe_getattr(current_state, ["wrenches", -1, "torque", "z"])
-                    # convert_mocab_points_to_str(transforms) #buffer
                 ]
             )
 
@@ -231,17 +216,6 @@ def write_data_to_file(recorded_data, file_name):
 
 
 def quaternion_rotation_matrix(Q):
-    """
-    Covert a quaternion into a full three-dimensional rotation matrix.
-
-    Input
-    :param Q: A 4 element array representing the quaternion (q0,q1,q2,q3)
-
-    Output
-    :return: A 3x3 element matrix representing the full 3D rotation matrix.
-             This rotation matrix converts a point in the local reference
-             frame to a point in the global reference frame.
-    """
     # Extract the values from Q
     q0 = Q[0]
     q1 = Q[1]
@@ -270,17 +244,10 @@ def quaternion_rotation_matrix(Q):
 
 
 def projectPose(pose, array):
-    # print("Old pose",pose)
-    # print("projection array",array)
     x0, y0, z0 = [pose[0], pose[1], pose[2]]
     dx, dy, dz = array
     quat = [pose[3], pose[4], pose[5], pose[6]]
-    # r = R.from_quat(quat)
     r = quaternion_rotation_matrix([pose[6], pose[3], pose[4], pose[5]])
-    # print("r: ",r)
-    # vxx, vxy, vxz #VecX
-    # vyx, vyy, vyz #VecY
-    # vzx, vzy, vzz #VecZ
     vxx, vyx, vzx = r[0]
     vxy, vyy, vzy = r[1]
     vxz, vyz, vzz = r[2]
@@ -290,7 +257,6 @@ def projectPose(pose, array):
         z0 + dx * vxz + dy * vyz + dz * vzz,
     ]
     new_pose = new_point + quat
-    # print("New pose",new_pose)
     return new_pose
 
 
@@ -335,83 +301,7 @@ if __name__ == "__main__":
             if execute == "y":
                 get_traj_exec(res.general_traj)
     else:
-        ring_num = 2
-        trial_screw = "m4"
-
-        offset_r = 0.001 * ring_num
-        offset_deg = max(15 * (ring_num - 1), 0)
-        offset_orientation = 15
-
-        offset_z = -offset_r * np.cos(np.deg2rad(offset_deg))
-        offset_x = offset_r * np.sin(np.deg2rad(offset_deg))
-
-        orange_hover = getPose_msg(
-            projectPose(nominal_hole, [offset_x, 0.07, offset_z])
-        )
-        orange_screw_hole = getPose_msg(
-            projectPose(nominal_hole, [offset_x, 0, offset_z])
-        )
-        orange_screw_plunge = getPose_msg(
-            projectPose(nominal_hole, [offset_x, -0.025, offset_z])
-        )
-
-        orange_hover.orientation = rotate_quaternion_z(
-            orange_hover.orientation, offset_orientation
-        )
-        orange_screw_hole.orientation = rotate_quaternion_z(
-            orange_screw_hole.orientation, offset_orientation
-        )
-        orange_screw_plunge.orientation = rotate_quaternion_z(
-            orange_screw_plunge.orientation, offset_orientation
-        )
-
-        response = get_traj_plan_test([orange_hover], 0.1, 2000)
-        get_traj_exec(response.general_traj)
-
-        # response = get_traj_plan_test([orange_screw_hole], 0.1, 1500)
-
-        data_recorder = Worker()
-        data_recorder.thread.start()
-        start_time = time.time_ns()
-
-        # get_traj_exec(response.general_traj)
-
-        response = get_traj_plan_test([orange_screw_plunge], 0.05, 1500)
-        get_traj_exec(response.general_traj)
-
-        success = input("Success?[1: success, 2[ab]: failure]\n")
-        end_time = time.time_ns()
-
-        data_recorder.running = False
-        data_recorder.thread.join()
-
-        data_store_file = (
-                trial_screw
-                + "_"
-                + str(ring_num)
-                + "_"
-                + str(offset_deg)
-                + "_"
-                + str(offset_orientation)
-                + "_"
-                + success
-        )
-        if success == "1":
-            data_store_file += "_" + str(round((end_time - start_time) / 10 ** 9, 3))
-
-        data_store_file += ".csv"
-        write_data_to_file(data_recorder.recorded_data, data_store_file)
-
-        data = np.array(data_recorder.recorded_data)
-        fig, (ax1, ax2) = plt.subplots(2, 1)
-        ax1.plot(data[:, 0], data[:, -6:-3])
-        ax2.plot(data[:, 0], data[:, -3])
-        ax2.plot(data[:, 0], data[:, -2])
-        ax2.plot(data[:, 0], data[:, -1])
-        plt.show()
-
-        response = get_traj_plan_test([orange_hover], 0.1, 2000)
-        get_traj_exec(response.general_traj)
+        pass
 
 # INSTRUCTIONS TO RUN THE SCRIPT
 # 1. Open 5 terminal windows. In each of the window, run `source devel/setup.bash` file
