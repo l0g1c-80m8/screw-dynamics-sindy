@@ -28,7 +28,7 @@ store_folder = "/home/other/Desktop/screwdriver_exp/sensor_single"  ## Fix me
 
 test = False  # Just run test screwdriving, no data capture
 
-nominal_hole = [0.82352, -0.1634, 0.3095, 0.31629, 0.31504, 0.63268, 0.63279]
+nominal_pose = [0.82352, -0.1634, 0.3095, 0.31629, 0.31504, 0.63268, 0.63279]
 
 
 def get_traj_exec(request):
@@ -284,9 +284,9 @@ if __name__ == "__main__":
     if test:
         rospy.init_node("experiment", anonymous=True)
 
-        orange_hover = getPose_msg(projectPose(nominal_hole, [0, 0.07, 0]))
-        orange_screw_hole = getPose_msg(nominal_hole)
-        orange_screw_plunge = getPose_msg(projectPose(nominal_hole, [0, -0.01, 0]))
+        orange_hover = getPose_msg(projectPose(nominal_pose, [0, 0.07, 0]))
+        orange_screw_hole = getPose_msg(nominal_pose)
+        orange_screw_plunge = getPose_msg(projectPose(nominal_pose, [0, -0.01, 0]))
 
         res = get_traj_plan_test([orange_hover, orange_screw_hole, orange_screw_plunge])
         while res.success:
@@ -301,7 +301,32 @@ if __name__ == "__main__":
             if execute == "y":
                 get_traj_exec(res.general_traj)
     else:
-        pass
+        orange_hover = getPose_msg(projectPose(nominal_pose, [0., 0.07, 0.]))
+        orange_screw_hole = getPose_msg(projectPose(nominal_pose, [0., 0., 0.]))
+        orange_screw_plunge = getPose_msg(projectPose(nominal_pose, [0., -0.025, 0.]))
+
+        orange_hover.orientation = rotate_quaternion_z(orange_hover.orientation, 0)
+        orange_screw_hole.orientation = rotate_quaternion_z(orange_screw_hole.orientation, 0)
+        orange_screw_plunge.orientation = rotate_quaternion_z(orange_screw_plunge.orientation, 0)
+
+        # get all trajectories
+        # got to hover
+
+        # start camera
+        # start recording f/t data
+        # start screwdriver
+
+        # wait for screwdriving to conclude
+
+        # stop camera
+        # stop recording f/t data
+        # reset screwdriver
+
+        # go back to hover pose
+        # go back to home position
+
+
+    
 
 # INSTRUCTIONS TO RUN THE SCRIPT
 # 1. Open 5 terminal windows. In each of the window, run `source devel/setup.bash` file
