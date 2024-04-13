@@ -309,24 +309,26 @@ if __name__ == "__main__":
         orange_screw_hole.orientation = rotate_quaternion_z(orange_screw_hole.orientation, 0)
         orange_screw_plunge.orientation = rotate_quaternion_z(orange_screw_plunge.orientation, 0)
 
-        # get all trajectories
-        # got to hover
+        home_to_hover_traj = get_traj_plan_test([orange_hover], 0.1, 2000)
+        hover_to_plunge_traj = get_traj_plan_test([orange_screw_plunge], 0.05, 1500)
+        get_traj_exec(home_to_hover_traj.general_traj)
 
         # start camera
-        # start recording f/t data
         # start screwdriver
+        data_recorder = Worker()
+        data_recorder.thread.start()
+        start_time = time.time_ns()
 
-        # wait for screwdriving to conclude
+        get_traj_exec(hover_to_plunge_traj.general_traj)
 
         # stop camera
-        # stop recording f/t data
+        data_recorder.running = False
+        data_recorder.thread.join()
         # reset screwdriver
 
-        # go back to hover pose
+        plunge_to_hover_traj = get_traj_plan_test([orange_screw_plunge], 0.1, 2000)
+        get_traj_exec(plunge_to_hover_traj.general_traj)
         # go back to home position
-
-
-    
 
 # INSTRUCTIONS TO RUN THE SCRIPT
 # 1. Open 5 terminal windows. In each of the window, run `source devel/setup.bash` file
@@ -337,4 +339,3 @@ if __name__ == "__main__":
 # 5. On another window, run `rosrun camera_node camera_capture`
 # 6. On another window, run `rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0`
 # 7. Finally, run `rosrun iiwa_cam experiment.py`
-
