@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # import rospy
 # import numpy as np
 # from geometry_msgs.msg import Pose, Point, Quaternion
@@ -31,6 +33,7 @@ store_folder = "/home/other/Desktop/screwdriver_exp/sensor_single"  ## Fix me
 test = False  # Just run test screwdriving, no data capture
 
 nominal_pose = [0.82352, -0.1634, 0.3095, 0.31629, 0.31504, 0.63268, 0.63279]
+home_pose = [0.4, 0.0, 0.0, 0., 0., 0., 1.]
 
 _PLUNGE_STIFFNESS = 1500
 
@@ -145,7 +148,7 @@ class Worker:
     def quaternion_to_euler(x, y, z, w):
         q = np.array([x, y, z, w])
         rotation_matrix = t3d.quaternions.quat2mat(q)
-        return t3d.euler.mat2euler(rotation_matrix, 'sxyz')C
+        return t3d.euler.mat2euler(rotation_matrix, 'sxyz')
 
     def store_data_to_object(self):
         rospy.wait_for_service("/cam/iiwa/EndEffectorState")
@@ -323,7 +326,7 @@ def rotate_quaternion_z(quat: geometry_msgs.msg.Quaternion, deg: int):
 
 if __name__ == "__main__":
     rospy.init_node("experiment", anonymous=True)
-    screwdriver_pub = rospy.Publisher('my_topic', String, queue_size=10)
+    screwdriver_pub = rospy.Publisher('screwdriver_cmd', String, queue_size=10)
 
     if test:
         orange_hover = getPose_msg(projectPose(nominal_pose, [0, 0.07, 0]))
@@ -343,6 +346,7 @@ if __name__ == "__main__":
             if execute == "y":
                 get_traj_exec(res.general_traj)
     else:
+        orange_home = getPose_msg(projectPose(nominal_pose, [0., 0.2, 0.]))
         orange_hover = getPose_msg(projectPose(nominal_pose, [0., 0.07, 0.]))
         orange_screw_hole = getPose_msg(projectPose(nominal_pose, [0., 0., 0.]))
         orange_screw_plunge = getPose_msg(projectPose(nominal_pose, [0., -0.025, 0.]))
@@ -352,7 +356,6 @@ if __name__ == "__main__":
         orange_screw_plunge.orientation = rotate_quaternion_z(orange_screw_plunge.orientation, 0)
 
         home_to_hover_traj = get_traj_plan_test([orange_hover], 0.1, 2000)
-        hover_to_plunge_traj = get_traj_plan_test([orange_screw_plunge], 0.05, _PLUNGE_STIFFNESS)
         get_traj_exec(home_to_hover_traj.general_traj)
 
         # start camera
@@ -361,6 +364,7 @@ if __name__ == "__main__":
         data_recorder.thread.start()
         start_time = time.time_ns()
 
+        hover_to_plunge_traj = get_traj_plan_test([orange_screw_plunge], 0.05, _PLUNGE_STIFFNESS)
         get_traj_exec(hover_to_plunge_traj.general_traj)
 
         # stop camera
@@ -368,9 +372,10 @@ if __name__ == "__main__":
         data_recorder.thread.join()
         screwdriver_pub.publish("4")
 
-        plunge_to_hover_traj = get_traj_plan_test([orange_screw_plunge], 0.1, 2000)
+        plunge_to_hover_traj = get_traj_plan_test([orange_hover], 0.1, 2000)
         get_traj_exec(plunge_to_hover_traj.general_traj)
-        # go back to home position
+        hover_to_home_traj = get_traj_plan_test([orange_home], 0.1, 2000)
+        get_traj_exec(hover_to_home_traj.general_traj)
 
 # INSTRUCTIONS TO RUN THE SCRIPT
 # 1. Open 5 terminal windows. In each of the window, run `source devel/setup.bash` file
@@ -380,4 +385,4 @@ if __name__ == "__main__":
 #   set the flag to true to execute on the real robot.
 # 5. On another window, run `rosrun camera_node camera_capture`
 # 6. On another window, run `rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0`
-# 7. Finally, run `rosrun iiwa_cam experiment.py`
+# 7. Finally, run `rosrun iiwa_cam experiment.py
