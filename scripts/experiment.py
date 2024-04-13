@@ -18,6 +18,7 @@ import geometry_msgs.msg
 import matplotlib.pyplot as plt
 import numpy as np
 import rospy
+from std_msgs.msg import String
 import tf.transformations as tft
 from iiwa_cam.msg import GeneralControl
 from iiwa_cam.srv import GeneralExecution, EndEffectorState
@@ -322,6 +323,8 @@ def rotate_quaternion_z(quat: geometry_msgs.msg.Quaternion, deg: int):
 
 if __name__ == "__main__":
     rospy.init_node("experiment", anonymous=True)
+    screwdriver_pub = rospy.Publisher('my_topic', String, queue_size=10)
+
     if test:
         orange_hover = getPose_msg(projectPose(nominal_pose, [0, 0.07, 0]))
         orange_screw_hole = getPose_msg(nominal_pose)
@@ -353,7 +356,7 @@ if __name__ == "__main__":
         get_traj_exec(home_to_hover_traj.general_traj)
 
         # start camera
-        # start screwdriver
+        screwdriver_pub.publish("1")
         data_recorder = Worker()
         data_recorder.thread.start()
         start_time = time.time_ns()
@@ -363,7 +366,7 @@ if __name__ == "__main__":
         # stop camera
         data_recorder.running = False
         data_recorder.thread.join()
-        # reset screwdriver
+        screwdriver_pub.publish("4")
 
         plunge_to_hover_traj = get_traj_plan_test([orange_screw_plunge], 0.1, 2000)
         get_traj_exec(plunge_to_hover_traj.general_traj)
