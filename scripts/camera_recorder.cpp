@@ -4,6 +4,7 @@
 #include <camera_recorder/RecordService.h> // Include your ROS service message header
 
 bool is_recording = false; // Flag to track recording state
+std::string save_path = "";
 
 // ROS service callback function
 bool recordCallback(your_package_name::RecordService::Request &req,
@@ -52,8 +53,8 @@ int main(int argc, char** argv) {
 
         // Save color and depth frames if recording
         if (is_recording) {
-            std::string color_filename = "color_frame_" + std::to_string(frame_number) + ".png";
-            std::string depth_filename = "depth_frame_" + std::to_string(frame_number) + ".png";
+            std::string color_filename = save_path + "color_frame_" + std::to_string(frame_number) + ".png";
+            std::string depth_filename = save_path + "depth_frame_" + std::to_string(frame_number) + ".png";
             cv::imwrite(color_filename, color_image);
             cv::imwrite(depth_filename, depth_image);
             frame_number++;
