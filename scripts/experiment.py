@@ -28,7 +28,7 @@ from iiwa_cam.srv import GeneralPlan
 from iiwa_msgs.msg import JointPositionVelocity
 
 ##############################
-store_folder = "/home/other/Desktop/screwdriver_exp/sensor_single"  # Fix me
+store_folder = "/home/other/Desktop/screwdriver_exp/sensor_single"  ## Fix me
 
 test = False  # Just run test screwdriving, no data capture
 
@@ -36,6 +36,13 @@ nominal_pose = [0.82352, -0.1634, 0.3095, 0.31629, 0.31504, 0.63268, 0.63279]
 home_pose = [0.4, 0.0, 0.0, 0., 0., 0., 1.]
 
 _PLUNGE_STIFFNESS = 1500
+_SLEEP_TIME = 21  # seconds
+
+
+def wait():
+    print("Thread: Starting 20-second wait...")
+    time.sleep(20)
+    print("Thread: 20 seconds have passed.")
 
 
 def get_traj_exec(request):
@@ -328,6 +335,7 @@ def rotate_quaternion_z(quat: geometry_msgs.msg.Quaternion, deg: int):
 if __name__ == "__main__":
     rospy.init_node("experiment", anonymous=True)
     screwdriver_pub = rospy.Publisher('screwdriver_cmd', String, queue_size=10)
+    wait_thread = threading.Thread(target=wait)
 
     if test:
         orange_hover = getPose_msg(projectPose(nominal_pose, [0, 0.07, 0]))
@@ -364,11 +372,13 @@ if __name__ == "__main__":
         data_recorder = Worker()
         data_recorder.thread.start()
         start_time = time.time_ns()
+        wait_thread.start()
 
         hover_to_plunge_traj = get_traj_plan_test([orange_screw_plunge], 0.05, _PLUNGE_STIFFNESS)
         get_traj_exec(hover_to_plunge_traj.general_traj)
 
         # stop camera
+        wait_thread.join()
         data_recorder.running = False
         data_recorder.thread.join()
         screwdriver_pub.publish("4")
