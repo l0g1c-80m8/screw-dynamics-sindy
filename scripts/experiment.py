@@ -20,12 +20,13 @@ import geometry_msgs.msg
 import matplotlib.pyplot as plt
 import numpy as np
 import rospy
-from std_msgs.msg import String
+from std_msgs.msg import String, Bool
 import tf.transformations as tft
 from iiwa_cam.msg import GeneralControl
 from iiwa_cam.srv import GeneralExecution, EndEffectorState
 from iiwa_cam.srv import GeneralPlan
 from iiwa_msgs.msg import JointPositionVelocity
+from camera_recorder.srv import RecordService
 
 ##############################
 store_folder = "/home/other/Desktop/screwdriver_exp/sensor_single"  ## Fix me
@@ -332,6 +333,17 @@ def rotate_quaternion_z(quat: geometry_msgs.msg.Quaternion, deg: int):
     return new_quat
 
 
+def call_record_service(flag):
+    rospy.wait_for_service('record_service')
+    print('Camera recording set to: {}'.format(flag))
+    try:
+        record_service = rospy.ServiceProxy('record_service', RecordService)
+        response = record_service(Bool(flag))
+        return response.success.data
+    except rospy.ServiceException as e:
+        print("Service call failed:", e)
+
+
 if __name__ == "__main__":
     rospy.init_node("experiment", anonymous=True)
     screwdriver_pub = rospy.Publisher('screwdriver_cmd', String, queue_size=10)
@@ -367,7 +379,7 @@ if __name__ == "__main__":
         home_to_hover_traj = get_traj_plan_test([orange_hover], 0.1, 2000)
         get_traj_exec(home_to_hover_traj.general_traj)
 
-        # start camera
+        call_record_service(True)
         screwdriver_pub.publish("1")
         data_recorder = Worker()
         data_recorder.thread.start()
@@ -377,8 +389,8 @@ if __name__ == "__main__":
         hover_to_plunge_traj = get_traj_plan_test([orange_screw_plunge], 0.05, _PLUNGE_STIFFNESS)
         get_traj_exec(hover_to_plunge_traj.general_traj)
 
-        # stop camera
         wait_thread.join()
+        call_record_service(False)
         data_recorder.running = False
         data_recorder.thread.join()
         screwdriver_pub.publish("4")
