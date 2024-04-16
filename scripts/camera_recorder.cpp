@@ -1,21 +1,17 @@
 #include <librealsense2/rs.hpp>
 #include <opencv2/opencv.hpp>
 #include <ros/ros.h>
-#include <camera_recorder/RecordService.h> // Include your ROS service message header
+#include "camera_recorder/RecordService.h"
 
 bool is_recording = false; // Flag to track recording state
-std::string save_path = "";
+std::string save_path = "/home/sam/Desktop/camera_recordings/";
 
 // ROS service callback function
-bool recordCallback(your_package_name::RecordService::Request &req,
-                    your_package_name::RecordService::Response &res) {
-    if (req.record) {
-        is_recording = true;
-        res.success = true;
-    } else {
-        is_recording = false;
-        res.success = true;
-    }
+bool recordCallback(camera_recorder::RecordService::Request &req,
+                    camera_recorder::RecordService::Response &res) {
+    if (req.record.data) is_recording = true;
+    else is_recording = false;
+    res.success.data = true;
     return true;
 }
 
@@ -28,8 +24,6 @@ int main(int argc, char** argv) {
     rs2::pipeline pipe;
     // Start streaming with default recommended configuration
     pipe.start();
-
-    int frame_number = 0; // Frame number counter
 
     // ROS service server for recording
     ros::ServiceServer service = nh.advertiseService("record_service", recordCallback);
@@ -44,6 +38,9 @@ int main(int argc, char** argv) {
         // Get the depth frame
         rs2::depth_frame depth_frame = frames.get_depth_frame();
 
+        // Get timestamp
+        auto timestamp = frames.get_timestamp();
+
         // Convert color frame to OpenCV Mat object
         cv::Mat color_image(cv::Size(color_frame.get_width(), color_frame.get_height()), CV_8UC3, (void*)color_frame.get_data(), cv::Mat::AUTO_STEP);
         cv::cvtColor(color_image, color_image, cv::COLOR_RGB2BGR); // Convert from RGB to BGR
@@ -53,11 +50,10 @@ int main(int argc, char** argv) {
 
         // Save color and depth frames if recording
         if (is_recording) {
-            std::string color_filename = save_path + "color_frame_" + std::to_string(frame_number) + ".png";
-            std::string depth_filename = save_path + "depth_frame_" + std::to_string(frame_number) + ".png";
+            std::string color_filename = save_path + "color_frame_" + std::to_string(timestamp) + ".png";
+            std::string depth_filename = save_path + "depth_frame_" + std::to_string(timestamp) + ".png";
             cv::imwrite(color_filename, color_image);
             cv::imwrite(depth_filename, depth_image);
-            frame_number++;
         }
 
         // Display images
