@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 import cv2
 import numpy as np
@@ -32,15 +33,40 @@ def get_pose(filepath):
     print('in file {}, found {} matching spots '.format(filepath, len(filtered_contours)), end='')
 
     if filtered_contours:
-        largest_contour = max(filtered_contours, key=cv2.contourArea)
+
+        height, width = image.shape[:2]
+        center_x = width // 2
+        center_y = height // 2
+
+        # Initialize variables for closest contour and its distance to the center
+        closest_contour = None
+        min_distance = float('inf')
+
+        # Iterate through contours
+        for contour in contours:
+            # Calculate the centroid of the contour
+            M = cv2.moments(contour)
+            if M["m00"] != 0:
+                cX = int(M["m10"] / M["m00"])
+                cY = int(M["m01"] / M["m00"])
+            else:
+                cX, cY = 0, 0
+
+            # Compute the distance between centroid and center of the image
+            distance = np.sqrt((cX - center_x) ** 2 + (cY - center_y) ** 2)
+
+            # Update closest contour if the distance is smaller
+            if distance < min_distance:
+                min_distance = distance
+                closest_contour = contour
 
         mask_filled = np.zeros_like(mask)
         green_mask = np.zeros_like(image)
         green_mask[:, :] = (0, 255, 0)
-        cv2.drawContours(mask_filled, [largest_contour], -1, 255, thickness=cv2.FILLED)
+        cv2.drawContours(mask_filled, [closest_contour], -1, 255, thickness=cv2.FILLED)
 
         # Get centroid of the filled contour
-        M = cv2.moments(largest_contour)
+        M = cv2.moments(closest_contour)
         if M["m00"] != 0:
             centroid_x = int(M["m10"] / M["m00"])
             centroid_y = int(M["m01"] / M["m00"])
