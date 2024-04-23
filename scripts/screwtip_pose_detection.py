@@ -27,7 +27,7 @@ def get_pose(filepath):
     threshold_area = 0
     filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) > threshold_area]
 
-    print('in file {}, found {} matching spots '.format(filepath, len(filtered_contours)))
+    print('in file {}, found {} matching spots '.format(filepath, len(filtered_contours)), end='')
 
     if filtered_contours:
         largest_contour = max(filtered_contours, key=cv2.contourArea)
@@ -41,6 +41,8 @@ def get_pose(filepath):
             centroid_x = int(M["m10"] / M["m00"])
             centroid_y = int(M["m01"] / M["m00"])
             centroid = (centroid_x, centroid_y)
+
+            print(', and centroid is {}', centroid)
 
             cv2.circle(image, centroid, 1, (0, 0, 255), -1)
 
