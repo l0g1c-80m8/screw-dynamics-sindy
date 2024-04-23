@@ -44,7 +44,7 @@ def get_pose(filepath):
             centroid_y = int(M["m01"] / M["m00"])
             centroid = (centroid_x, centroid_y)
 
-            print(', and centroid is {}', centroid)
+            print(', and centroid is {}'.format(centroid))
 
             cv2.circle(image, centroid, 1, (0, 0, 255), -1)
 
