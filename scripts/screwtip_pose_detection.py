@@ -30,7 +30,7 @@ def get_pose(filepath):
     threshold_area = 0
     filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) > threshold_area]
 
-    print('in file {}, found {} matching spots '.format(filepath, len(filtered_contours)), end='')
+    print('in file {}, found {} matching spots'.format(filepath, len(filtered_contours)), end='')
 
     if filtered_contours:
 
