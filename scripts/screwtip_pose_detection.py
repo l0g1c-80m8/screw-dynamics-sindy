@@ -49,9 +49,10 @@ def get_pose(filepath):
             cv2.circle(image, centroid, 1, (0, 0, 255), -1)
 
             if args.debug:
-                cv2.imshow('Result', image)
-                cv2.waitKey(0)
-                cv2.destroyAllWindows()
+                if not 330 <= centroid[0] <=350 and not 225 <= centroid[1] <=245:
+                    cv2.imshow('Result', image)
+                    cv2.waitKey(0)
+                    cv2.destroyAllWindows()
 
 
 def main():
