@@ -1,4 +1,5 @@
 import os
+import re
 import cv2
 import numpy as np
 from argparse import ArgumentParser
@@ -48,9 +49,11 @@ def get_pose(filepath):
 
 
 def main():
-
-    filepath = os.path.join(args.data_dir, 'sample_image.png')
-    get_pose(filepath)
+    for item in os.listdir(args.data_dir):
+        if not re.match(r'^c_\d+.\d+\.png$', item):
+            continue
+        filepath = os.path.join(args.data_dir, item)
+        get_pose(filepath)
 
 
 if __name__ == '__main__':
