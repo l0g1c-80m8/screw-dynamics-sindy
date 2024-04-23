@@ -35,6 +35,8 @@ def get_pose(filepath):
         largest_contour = max(filtered_contours, key=cv2.contourArea)
 
         mask_filled = np.zeros_like(mask)
+        green_mask = np.zeros_like(image)
+        green_mask[:, :] = (0, 255, 0)
         cv2.drawContours(mask_filled, [largest_contour], -1, 255, thickness=cv2.FILLED)
 
         # Get centroid of the filled contour
@@ -46,11 +48,12 @@ def get_pose(filepath):
 
             print(', and centroid is {}'.format(centroid))
 
-            cv2.circle(image, centroid, 1, (0, 0, 255), -1)
+            result = np.where(mask[:, :, np.newaxis] != 0, green_mask, image)
+            cv2.circle(result, centroid, 1, (0, 0, 255), -1)
 
             if args.debug:
                 if not 330 <= centroid[0] <=350 and not 225 <= centroid[1] <=245:
-                    cv2.imshow('Result', image)
+                    cv2.imshow('Result', result)
                     cv2.waitKey(0)
                     cv2.destroyAllWindows()
 
