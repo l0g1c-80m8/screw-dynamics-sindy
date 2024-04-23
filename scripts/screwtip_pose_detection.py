@@ -10,6 +10,8 @@ def get_args():
 
     parser.add_argument('--data_dir', type=str, default='./data',
                         action='store', dest='data_dir', help='data directory')
+    parser.add_argument('--debug', type=bool, default=True,
+                        action='store', dest='debug', help='debug images?')
 
     return parser.parse_args()
 
@@ -46,9 +48,10 @@ def get_pose(filepath):
 
             cv2.circle(image, centroid, 1, (0, 0, 255), -1)
 
-            cv2.imshow('Result', image)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            if args.debug:
+                cv2.imshow('Result', image)
+                cv2.waitKey(0)
+                cv2.destroyAllWindows()
 
 
 def main():
