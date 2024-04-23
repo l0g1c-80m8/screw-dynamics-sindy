@@ -24,28 +24,29 @@ def get_pose(filepath):
     mask = cv2.inRange(hsv_image, lower_red, upper_red)
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    threshold_area = 10
+    threshold_area = 0
     filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) > threshold_area]
 
-    mask_filled = np.zeros_like(mask)
-    cv2.drawContours(mask_filled, filtered_contours, -1, 255, thickness=cv2.FILLED)
+    print('in file {}, found {} matching spots '.format(filepath, len(filtered_contours)))
 
-    # Get centroid of the filled contour
-    centroid = None
-    for cnt in filtered_contours:
-        M = cv2.moments(cnt)
+    if filtered_contours:
+        largest_contour = max(filtered_contours, key=cv2.contourArea)
+
+        mask_filled = np.zeros_like(mask)
+        cv2.drawContours(mask_filled, [largest_contour], -1, 255, thickness=cv2.FILLED)
+
+        # Get centroid of the filled contour
+        M = cv2.moments(largest_contour)
         if M["m00"] != 0:
             centroid_x = int(M["m10"] / M["m00"])
             centroid_y = int(M["m01"] / M["m00"])
             centroid = (centroid_x, centroid_y)
-            break  # Assuming there's only one contour
 
-    if centroid is not None:
-        cv2.circle(image, centroid, 1, (0, 0, 255), -1)
+            cv2.circle(image, centroid, 1, (0, 0, 255), -1)
 
-    cv2.imshow('Result', image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+            cv2.imshow('Result', image)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
 
 
 def main():
