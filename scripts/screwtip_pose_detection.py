@@ -17,7 +17,7 @@ def get_args():
     return parser.parse_args()
 
 
-def get_pose(filepath):
+def get_pix(filepath):
     image = cv2.imread(filepath)
     hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
@@ -78,18 +78,30 @@ def get_pose(filepath):
             cv2.circle(result, centroid, 1, (0, 0, 255), -1)
 
             if args.debug:
-                if not 330 <= centroid[0] <=350 and not 225 <= centroid[1] <=245:
+                if not 330 <= centroid[0] <= 350 and not 225 <= centroid[1] <= 245:
                     cv2.imshow('Result', result)
                     cv2.waitKey(0)
                     cv2.destroyAllWindows()
 
+            return centroid
+
+
+def get_depth(filepath):
+    return 0
+
 
 def main():
+    tip_pixels = []
     for item in os.listdir(args.data_dir):
         if not re.match(r'^c_\d+.\d+\.png$', item):
             continue
         filepath = os.path.join(args.data_dir, item)
-        get_pose(filepath)
+        tip_pix = get_pix(filepath)
+        depth = get_depth(os.path.join(args.data_dir, item.replace('c_', 'd_')))
+        tip_pixels.append((item.replace('c_', ''), *tip_pix, depth))
+
+    if args.debug:
+        print(tip_pixels)
 
 
 if __name__ == '__main__':
