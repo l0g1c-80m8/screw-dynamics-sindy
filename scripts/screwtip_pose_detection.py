@@ -150,13 +150,13 @@ def main():
             if pixel is None:
                 invalid_pixel_ctr += 1
                 invalid_depth_ctr += 1
-                continue
-
-            depth = get_depth(os.path.join(image_path, item.replace('c_', 'd_')), pixel)
-            if depth <= .0 and args.debug:
-                invalid_depth_ctr += 1
-                # print('depth {}, for file {}'.format(depth, item))
-            data.append((float(item.replace('c_', '').replace('.png', '')), *pixel, depth))
+                data.append((float(item.replace('c_', '').replace('.png', '')), -1, -1, 0))
+            else:
+                depth = get_depth(os.path.join(image_path, item.replace('c_', 'd_')), pixel)
+                if depth <= .0 and args.debug:
+                    invalid_depth_ctr += 1
+                    # print('depth {}, for file {}'.format(depth, item))
+                data.append((float(item.replace('c_', '').replace('.png', '')), *pixel, depth))
 
         data = np.array(data)
 
