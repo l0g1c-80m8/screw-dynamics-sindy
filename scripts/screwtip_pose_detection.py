@@ -156,7 +156,7 @@ def main():
         write_to_file(data, os.path.join(subdir_path, args.out_file))
 
         if args.debug:
-            print('invalid depth count is {} for file {}'.format(zero_depth_ctr, subdir))
+            print('invalid depth count is {} for dir {}'.format(zero_depth_ctr, subdir))
         #     print(data)
 
 
