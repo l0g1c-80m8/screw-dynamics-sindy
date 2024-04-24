@@ -22,7 +22,6 @@ def get_args():
 
 
 def get_pixel(filepath):
-    print(filepath)
     image = cv2.imread(filepath)
     hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
