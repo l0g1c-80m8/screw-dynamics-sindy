@@ -88,7 +88,7 @@ def get_pixel(filepath):
             if not 330 <= centroid[0] <= 350 and not 225 <= centroid[1] <= 245:
                 out_of_bounds = 1
                 if args.check_images:
-                    cv2.imshow('Result', result)
+                    cv2.imshow(filepath, result)
                     cv2.waitKey(0)
                     cv2.destroyAllWindows()
 
