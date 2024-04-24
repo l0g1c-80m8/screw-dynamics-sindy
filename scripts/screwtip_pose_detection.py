@@ -17,6 +17,8 @@ def get_args():
                         action='store', dest='out_file', help='output file')
     parser.add_argument('--debug', type=bool, default=True,
                         action='store', dest='debug', help='debug images?')
+    parser.add_argument('--check_images', type=bool, default=False,
+                        action='store', dest='check_images', help='check sus images?')
 
     return parser.parse_args()
 
@@ -81,7 +83,7 @@ def get_pixel(filepath):
             result = np.where(mask[:, :, np.newaxis] != 0, green_mask, image)
             cv2.circle(result, centroid, 1, (0, 0, 255), -1)
 
-            if args.debug:
+            if args.check_images:
                 if not 330 <= centroid[0] <= 350 and not 225 <= centroid[1] <= 245:
                     cv2.imshow('Result', result)
                     cv2.waitKey(0)
