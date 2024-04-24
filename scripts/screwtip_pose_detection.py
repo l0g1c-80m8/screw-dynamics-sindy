@@ -83,13 +83,16 @@ def get_pixel(filepath):
             result = np.where(mask[:, :, np.newaxis] != 0, green_mask, image)
             cv2.circle(result, centroid, 1, (0, 0, 255), -1)
 
-            if args.check_images:
-                if not 330 <= centroid[0] <= 350 and not 225 <= centroid[1] <= 245:
+            out_of_bounds = 0
+
+            if not 330 <= centroid[0] <= 350 and not 225 <= centroid[1] <= 245:
+                out_of_bounds = 1
+                if args.check_images:
                     cv2.imshow('Result', result)
                     cv2.waitKey(0)
                     cv2.destroyAllWindows()
 
-            return centroid
+            return centroid, out_of_bounds
 
 
 def get_depth(filepath, pixel):
@@ -159,11 +162,13 @@ def main():
         data = []
         invalid_depth_ctr = 0
         invalid_pixel_ctr = 0
+        out_of_bounds_ctr = 0
         for item in os.listdir(image_path):
             if not re.match(r'^c_\d+.\d+\.png$', item):
                 continue
             filepath = os.path.join(image_path, item)
-            pixel = get_pixel(filepath)
+            pixel, out_of_bounds = get_pixel(filepath)
+            out_of_bounds_ctr += out_of_bounds
 
             if pixel is None:
                 invalid_pixel_ctr += 1
@@ -184,6 +189,7 @@ def main():
         if args.debug:
             print('invalid pixel count is {} for dir {}'.format(invalid_pixel_ctr, subdir))
             print('invalid depth count is {} for dir {}'.format(invalid_depth_ctr, subdir))
+            print('out of bounds count is {} for dir {}'.format(out_of_bounds_ctr, subdir))
         #     print(data)
 
 
