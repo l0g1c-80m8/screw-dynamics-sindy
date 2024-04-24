@@ -11,6 +11,10 @@ def get_args():
 
     parser.add_argument('--data_dir', type=str, default='./data',
                         action='store', dest='data_dir', help='data directory')
+    parser.add_argument('--out_dir', type=str, default='./data',
+                        action='store', dest='out_dir', help='output directory')
+    parser.add_argument('--out_file', type=str, default='observation.csv',
+                        action='store', dest='out_file', help='output file')
     parser.add_argument('--debug', type=bool, default=True,
                         action='store', dest='debug', help='debug images?')
 
@@ -93,20 +97,30 @@ def get_depth(filepath, pixel):
     return depth
 
 
+def write_to_file(data, filepath):
+    # Header for your data
+    headers = ['time', 'X', 'Y', 'Z']
+    data_with_headers = np.vstack((headers, data))
+    np.savetxt(filepath, data_with_headers, delimiter=",", fmt="%s")
+
+
 def main():
-    tip_pixels = []
+    data = []
     for item in os.listdir(args.data_dir):
         if not re.match(r'^c_\d+.\d+\.png$', item):
             continue
         filepath = os.path.join(args.data_dir, item)
         tip_pix = get_pix(filepath)
         depth = get_depth(os.path.join(args.data_dir, item.replace('c_', 'd_')), tip_pix)
-        tip_pixels.append((item.replace('c_', ''), *tip_pix, depth))
+        data.append((item.replace('c_', ''), *tip_pix, depth))
+
+    write_to_file(np.array(data), os.path.join(args.out_dir, args.out_file))
 
     if args.debug:
-        print(tip_pixels)
+        print(data)
 
 
 if __name__ == '__main__':
     args = get_args()
     main()
+    sys.exit(0)
