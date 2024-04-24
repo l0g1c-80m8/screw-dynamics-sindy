@@ -131,6 +131,7 @@ def pixel_to_3d(z_depth, cx, cy):
 
 def main():
     for subdir in os.listdir(args.data_dir):
+        print('processing {}...'.format(subdir))
         if not re.match(r'^\d{1,2}_\d{2}_\d{1,2}_M\d_\d{3,4}$', subdir):
             continue
 
@@ -138,15 +139,22 @@ def main():
         image_path = os.path.join(subdir_path, 'camera')
 
         data = []
-        zero_depth_ctr = 0
+        invalid_depth_ctr = 0
+        invalid_pixel_ctr = 0
         for item in os.listdir(image_path):
             if not re.match(r'^c_\d+.\d+\.png$', item):
                 continue
             filepath = os.path.join(image_path, item)
             pixel = get_pixel(filepath)
+
+            if pixel is None:
+                invalid_pixel_ctr += 1
+                invalid_depth_ctr += 1
+                continue
+
             depth = get_depth(os.path.join(image_path, item.replace('c_', 'd_')), pixel)
             if depth <= .0 and args.debug:
-                zero_depth_ctr += 1
+                invalid_depth_ctr += 1
                 # print('depth {}, for file {}'.format(depth, item))
             data.append((float(item.replace('c_', '').replace('.png', '')), *pixel, depth))
 
@@ -156,7 +164,8 @@ def main():
         write_to_file(data, os.path.join(subdir_path, args.out_file))
 
         if args.debug:
-            print('invalid depth count is {} for dir {}'.format(zero_depth_ctr, subdir))
+            print('invalid pixel count is {} for dir {}'.format(invalid_pixel_ctr, subdir))
+            print('invalid depth count is {} for dir {}'.format(invalid_depth_ctr, subdir))
         #     print(data)
 
 
