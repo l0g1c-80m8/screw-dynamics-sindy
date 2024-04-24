@@ -136,6 +136,7 @@ def main():
         image_path = os.path.join(subdir_path, 'camera')
 
         data = []
+        zero_depth_ctr = 0
         for item in os.listdir(image_path):
             if not re.match(r'^c_\d+.\d+\.png$', item):
                 continue
@@ -143,7 +144,8 @@ def main():
             pixel = get_pixel(filepath)
             depth = get_depth(os.path.join(image_path, item.replace('c_', 'd_')), pixel)
             if depth <= .0 and args.debug:
-                print('depth {}, for file {}'.format(depth, item))
+                zero_depth_ctr += 1
+                # print('depth {}, for file {}'.format(depth, item))
             data.append((float(item.replace('c_', '').replace('.png', '')), *pixel, depth))
 
         data = np.array(data)
@@ -151,7 +153,8 @@ def main():
         fix_data(data)
         write_to_file(data, os.path.join(subdir_path, args.out_file))
 
-        # if args.debug:
+        if args.debug:
+            print('invalid depth count is {} for file {}'.format(zero_depth_ctr, subdir))
         #     print(data)
 
 
