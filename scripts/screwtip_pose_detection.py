@@ -15,7 +15,7 @@ def get_args():
                         action='store', dest='out_dir', help='output directory')
     parser.add_argument('--out_file', type=str, default='observation.csv',
                         action='store', dest='out_file', help='output file')
-    parser.add_argument('--debug', type=bool, default=False,
+    parser.add_argument('--debug', type=bool, default=True,
                         action='store', dest='debug', help='debug images?')
 
     return parser.parse_args()
