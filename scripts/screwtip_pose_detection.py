@@ -105,6 +105,16 @@ def write_to_file(data, filepath):
     np.savetxt(filepath, data_with_headers, delimiter=",", fmt="%s")
 
 
+def fix_data(data):
+    zero_indices = np.where(data[:, -1] == 0.0)[0]
+    for zero_index in zero_indices:
+        data[zero_index, -1] = (
+                np.sum(data[zero_index - 4:zero_index, -1]) +
+                np.sum(data[zero_index:zero_index + 4, -1]) /
+                8.
+        )
+
+
 def main():
     data = []
     for item in os.listdir(args.data_dir):
@@ -115,9 +125,12 @@ def main():
         depth = get_depth(os.path.join(args.data_dir, item.replace('c_', 'd_')), tip_pix)
         if depth <= .0 and args.debug:
             print('depth {}, for file {}'.format(depth, item))
-        data.append((item.replace('c_', ''), *tip_pix, depth))
+        data.append((float(item.replace('c_', '').replace('.png', '')), *tip_pix, depth))
 
-    write_to_file(np.array(data), os.path.join(args.out_dir, args.out_file))
+    data = np.array(data)
+
+    fix_data(data)
+    write_to_file(data, os.path.join(args.out_dir, args.out_file))
 
     if args.debug:
         print(data)
