@@ -48,9 +48,11 @@ def get_pixel(filepath):
 
     if filtered_contours:
 
-        height, width = image.shape[:2]
-        center_x = width // 2
-        center_y = height // 2
+        # height, width = image.shape[:2]
+        # center_x = width // 2
+        # center_y = height // 2
+        center_x = 380
+        center_y = 230
 
         # Initialize variables for closest contour and its distance to the center
         closest_contour = None
@@ -93,7 +95,7 @@ def get_pixel(filepath):
 
             out_of_bounds = 0
 
-            if not 330 <= centroid[0] <= 350 and not 225 <= centroid[1] <= 245:
+            if not 340 <= centroid[0] <= 420 and not 200 <= centroid[1] <= 260:
                 out_of_bounds = 1
                 if args.check_images:
                     print(filepath)
