@@ -15,7 +15,7 @@ def get_args():
                         action='store', dest='out_dir', help='output directory')
     parser.add_argument('--out_file', type=str, default='observation.csv',
                         action='store', dest='out_file', help='output file')
-    parser.add_argument('--debug', type=bool, default=True,
+    parser.add_argument('--debug', type=bool, default=False,
                         action='store', dest='debug', help='debug images?')
 
     return parser.parse_args()
@@ -35,7 +35,7 @@ def get_pixel(filepath):
     threshold_area = 0
     filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) > threshold_area]
 
-    print('in file {}, found {} matching spots'.format(filepath, len(filtered_contours)), end='')
+    # print('in file {}, found {} matching spots'.format(filepath, len(filtered_contours)), end='')
 
     if filtered_contours:
 
@@ -77,7 +77,7 @@ def get_pixel(filepath):
             centroid_y = int(M["m01"] / M["m00"])
             centroid = (centroid_x, centroid_y)
 
-            print(', and centroid is {}'.format(centroid))
+            # print(', and centroid is {}'.format(centroid))
 
             result = np.where(mask[:, :, np.newaxis] != 0, green_mask, image)
             cv2.circle(result, centroid, 1, (0, 0, 255), -1)
@@ -134,25 +134,26 @@ def main():
             continue
 
         subdir_path = os.path.join(args.data_dir, subdir)
+        image_path = os.path.join(subdir_path, 'camera')
 
         data = []
-        for item in os.listdir(os.path.join(subdir_path, 'camera')):
+        for item in os.listdir(image_path):
             if not re.match(r'^c_\d+.\d+\.png$', item):
                 continue
-            filepath = os.path.join(subdir_path, 'camera', item)
+            filepath = os.path.join(image_path, item)
             pixel = get_pixel(filepath)
-            depth = get_depth(os.path.join(args.data_dir, item.replace('c_', 'd_')), pixel)
+            depth = get_depth(os.path.join(image_path, item.replace('c_', 'd_')), pixel)
             if depth <= .0 and args.debug:
                 print('depth {}, for file {}'.format(depth, item))
-            data.append((float(item.replace('c_', '').replace('.png', '')), *pixel, 0))
+            data.append((float(item.replace('c_', '').replace('.png', '')), *pixel, depth))
 
         data = np.array(data)
 
         fix_data(data)
         write_to_file(data, os.path.join(subdir_path, args.out_file))
 
-        if args.debug:
-            print(data)
+        # if args.debug:
+        #     print(data)
 
 
 if __name__ == '__main__':
