@@ -86,8 +86,11 @@ def get_pix(filepath):
             return centroid
 
 
-def get_depth(filepath):
-    return 0
+def get_depth(filepath, pixel):
+    image = cv2.imread(filepath, cv2.IMREAD_UNCHANGED)
+    depth = image[pixel[0], pixel[1]]
+
+    return depth
 
 
 def main():
@@ -97,7 +100,7 @@ def main():
             continue
         filepath = os.path.join(args.data_dir, item)
         tip_pix = get_pix(filepath)
-        depth = get_depth(os.path.join(args.data_dir, item.replace('c_', 'd_')))
+        depth = get_depth(os.path.join(args.data_dir, item.replace('c_', 'd_')), tip_pix)
         tip_pixels.append((item.replace('c_', ''), *tip_pix, depth))
 
     if args.debug:
