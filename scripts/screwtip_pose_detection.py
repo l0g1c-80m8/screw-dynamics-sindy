@@ -27,11 +27,19 @@ def get_pixel(filepath):
     image = cv2.imread(filepath)
     hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-    lower_red = np.array([110, 20, 50])
-    upper_red = np.array([179, 120, 100])
+    filters = [
+        {"lower": np.array([0, 50, 50]), "upper": np.array([10, 255, 100])},
+        {"lower": np.array([160, 50, 50]), "upper": np.array([179, 255, 100])},
+    ]
 
-    mask = cv2.inRange(hsv_image, lower_red, upper_red)
-    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    combined_mask = np.zeros_like(image[:, :, 0])
+
+    # Apply each filter and perform bitwise OR operation
+    for filter_params in filters:
+        mask = cv2.inRange(hsv_image, filter_params["lower"], filter_params["upper"])
+        combined_mask = cv2.bitwise_or(combined_mask, mask)
+
+    contours, _ = cv2.findContours(combined_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     threshold_area = 0
     filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) > threshold_area]
@@ -88,6 +96,7 @@ def get_pixel(filepath):
             if not 330 <= centroid[0] <= 350 and not 225 <= centroid[1] <= 245:
                 out_of_bounds = 1
                 if args.check_images:
+                    print(filepath)
                     cv2.imshow(filepath, result)
                     cv2.waitKey(0)
                     cv2.destroyAllWindows()
