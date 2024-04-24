@@ -91,10 +91,11 @@ def get_pix(filepath):
 
 
 def get_depth(filepath, pixel):
-    image = cv2.imread(filepath, cv2.IMREAD_UNCHANGED)
-    depth = image[pixel[0], pixel[1]]
-
-    return depth
+    depth_image = cv2.imread(filepath, cv2.IMREAD_UNCHANGED)
+    x, y = pixel
+    block = depth_image[max(0, y - 2):min(depth_image.shape[0], y + 2), max(0, x - 2):min(depth_image.shape[1], x + 2)]
+    average_depth = np.mean(block)
+    return average_depth
 
 
 def write_to_file(data, filepath):
