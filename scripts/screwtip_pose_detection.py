@@ -21,7 +21,8 @@ def get_args():
     return parser.parse_args()
 
 
-def get_pix(filepath):
+def get_pixel(filepath):
+    print(filepath)
     image = cv2.imread(filepath)
     hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
@@ -115,25 +116,43 @@ def fix_data(data):
         )
 
 
+def pixel_to_3d(z_depth, cx, cy):
+    # Example usage
+    u = 320
+    v = 240
+    fx = 500
+    fy = 500
+
+    x = (u - cx) * z_depth / fx
+    y = (v - cy) * z_depth / fy
+    return x, y, z_depth
+
+
 def main():
-    data = []
-    for item in os.listdir(args.data_dir):
-        if not re.match(r'^c_\d+.\d+\.png$', item):
+    for subdir in os.listdir(args.data_dir):
+        if not re.match(r'^\d{1,2}_\d{2}_\d{1,2}_M\d_\d{3,4}$', subdir):
             continue
-        filepath = os.path.join(args.data_dir, item)
-        tip_pix = get_pix(filepath)
-        depth = get_depth(os.path.join(args.data_dir, item.replace('c_', 'd_')), tip_pix)
-        if depth <= .0 and args.debug:
-            print('depth {}, for file {}'.format(depth, item))
-        data.append((float(item.replace('c_', '').replace('.png', '')), *tip_pix, depth))
 
-    data = np.array(data)
+        subdir_path = os.path.join(args.data_dir, subdir)
 
-    fix_data(data)
-    write_to_file(data, os.path.join(args.out_dir, args.out_file))
+        data = []
+        for item in os.listdir(os.path.join(subdir_path, 'camera')):
+            if not re.match(r'^c_\d+.\d+\.png$', item):
+                continue
+            filepath = os.path.join(subdir_path, 'camera', item)
+            pixel = get_pixel(filepath)
+            depth = get_depth(os.path.join(args.data_dir, item.replace('c_', 'd_')), pixel)
+            if depth <= .0 and args.debug:
+                print('depth {}, for file {}'.format(depth, item))
+            data.append((float(item.replace('c_', '').replace('.png', '')), *pixel, 0))
 
-    if args.debug:
-        print(data)
+        data = np.array(data)
+
+        fix_data(data)
+        write_to_file(data, os.path.join(subdir_path, args.out_file))
+
+        if args.debug:
+            print(data)
 
 
 if __name__ == '__main__':
