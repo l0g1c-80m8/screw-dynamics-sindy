@@ -159,5 +159,5 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 
-# temp ignore screwtip data
-**/1_30_1_M4_500/
+# temp ignore screwdriving model experiment data
+**/Screwdriving Model Experiments/
