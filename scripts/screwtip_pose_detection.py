@@ -95,7 +95,7 @@ def get_depth(filepath, pixel):
     x, y = pixel
     block = depth_image[max(0, y - 2):min(depth_image.shape[0], y + 2), max(0, x - 2):min(depth_image.shape[1], x + 2)]
     average_depth = np.mean(block)
-    return average_depth
+    return average_depth / 1000.
 
 
 def write_to_file(data, filepath):
@@ -113,6 +113,8 @@ def main():
         filepath = os.path.join(args.data_dir, item)
         tip_pix = get_pix(filepath)
         depth = get_depth(os.path.join(args.data_dir, item.replace('c_', 'd_')), tip_pix)
+        if depth <= .0 and args.debug:
+            print('depth {}, for file {}'.format(depth, item))
         data.append((item.replace('c_', ''), *tip_pix, depth))
 
     write_to_file(np.array(data), os.path.join(args.out_dir, args.out_file))
