@@ -44,6 +44,9 @@ def get_pixel(filepath, subdir):
         '2_30_2_M4_1500': [
             {"lower": np.array([130, 30, 80]), "upper": np.array([179, 255, 155])}
         ],
+        '4_30_4_M5_500': [
+            {"lower": np.array([130, 30, 80]), "upper": np.array([179, 255, 155])}
+        ],
     }
 
     boundary_map = {
@@ -52,6 +55,7 @@ def get_pixel(filepath, subdir):
         '1_30_1_M4_500': ((290, 200), (350, 260)),
         '7_30_7_M6_500': ((290, 200), (350, 260)),
         '2_30_2_M4_1500': ((290, 200), (350, 260)),
+        '4_30_4_M5_500': ((290, 200), (350, 260)),
     }
 
     combined_mask = np.zeros_like(image[:, :, 0])
