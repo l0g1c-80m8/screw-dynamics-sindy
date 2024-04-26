@@ -63,7 +63,7 @@ def get_pixel(filepath, subdir):
     }
 
     boundary_map = {
-        'default': ((380, 220), (400, 240)),
+        'default': ((340, 200), (420, 260)),
         '14_60_5_M5_1500': ((340, 200), (420, 260)),
         '5_30_5_M5_1500': ((290, 200), (350, 260)),
         '1_30_1_M4_500': ((290, 200), (350, 260)),
@@ -249,6 +249,8 @@ def main():
             print('invalid depth count is {} for dir {}'.format(invalid_depth_ctr, subdir))
             print('out of bounds count is {} for dir {}'.format(out_of_bounds_ctr, subdir))
         #     print(data)
+
+        sys.exit(0)
 
 
 if __name__ == '__main__':
