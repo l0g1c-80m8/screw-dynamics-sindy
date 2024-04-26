@@ -232,14 +232,14 @@ def main():
             if result is None:
                 invalid_pixel_ctr += 1
                 invalid_depth_ctr += 1
-                data.append((float(item.replace('c_', '').replace('.png', '')), -1, -1, 0))
+                data.append((float(item.replace('c_', '').replace('.png', '')), -1, -1, -1))
             else:
                 pixel, out_of_bounds = result
                 out_of_bounds_ctr += out_of_bounds
                 depth = get_depth(os.path.join(image_path, item.replace('c_', 'd_')), pixel)
                 if depth <= .0 and args.debug:
                     invalid_depth_ctr += 1
-                    data.append((float(item.replace('c_', '').replace('.png', '')), -1, -1, 0))
+                    data.append((float(item.replace('c_', '').replace('.png', '')), -1, -1, -1))
                 else:
                     data.append((
                         float(item.replace('c_', '').replace('.png', '')),
