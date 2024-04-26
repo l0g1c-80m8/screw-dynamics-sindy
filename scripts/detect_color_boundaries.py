@@ -4,6 +4,8 @@ import numpy as np
 images = [
     r'./data/Screwdriving Model Experiments/14_60_5_M5_1500/camera/c_1713917273904.680176.png',
     r'./data/Screwdriving Model Experiments/14_60_5_M5_1500/camera/c_1713917266711.516113.png',
+    r'./data/Screwdriving Model Experiments/12_60_3_M4_2500/camera/c_1713916523801.533691.png',
+    r'./data/Screwdriving Model Experiments/5_30_5_M5_1500/camera/c_1713834305043.865967.png',
 ]
 
 
@@ -45,7 +47,7 @@ def on_trackbar(val):
 
 
 # Load an image
-image = cv2.imread(images[1])
+image = cv2.imread(images[-1])
 resized_img = cv2.resize(image, (800, 600))
 
 # Convert the image to HSV color space
