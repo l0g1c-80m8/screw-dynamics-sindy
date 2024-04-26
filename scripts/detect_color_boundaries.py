@@ -8,6 +8,7 @@ images = [
     r'./data/Screwdriving Model Experiments/5_30_5_M5_1500/camera/c_1713834305043.865967.png',
     r'./data/Screwdriving Model Experiments/1_30_1_M4_500/camera/c_1713832807239.558105.png',
     r'./data/Screwdriving Model Experiments/7_30_7_M6_500/camera/c_1713835482379.481689.png',
+    r'./data/Screwdriving Model Experiments/2_30_2_M4_1500/camera/c_1713833289490.825684.png',
 ]
 
 
