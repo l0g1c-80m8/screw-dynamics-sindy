@@ -5,6 +5,12 @@ import cv2
 import numpy as np
 from argparse import ArgumentParser
 
+intrinsics_matrix_left = np.array([
+    [955.717, 0, 940.365],
+    [0, 955.717, 552.377],
+    [0, 0, 1]
+])
+
 
 def get_args():
     parser = ArgumentParser()
@@ -195,16 +201,13 @@ def fix_data(data):
         )
 
 
-def pixel_to_3d(z_depth, cx, cy):
-    # Example usage
-    u = 320
-    v = 240
-    fx = 500
-    fy = 500
+def pixel_to_3d(pixel_x, pixel_y, depth, intrinsics_matrix=intrinsics_matrix_left):
+    pixel_homogeneous = np.array([[pixel_x], [pixel_y], [1]])
+    K_inv = np.linalg.inv(intrinsics_matrix)
+    pixel_depth = np.array([[pixel_x * depth], [pixel_y * depth], [depth]])
+    coordinate_3d = np.dot(K_inv, pixel_depth)
 
-    x = (u - cx) * z_depth / fx
-    y = (v - cy) * z_depth / fy
-    return x, y, z_depth
+    return coordinate_3d.reshape(3,).tolist()
 
 
 def main():
@@ -236,8 +239,12 @@ def main():
                 depth = get_depth(os.path.join(image_path, item.replace('c_', 'd_')), pixel)
                 if depth <= .0 and args.debug:
                     invalid_depth_ctr += 1
-                    # print('depth {}, for file {}'.format(depth, item))
-                data.append((float(item.replace('c_', '').replace('.png', '')), *pixel, depth))
+                    data.append((float(item.replace('c_', '').replace('.png', '')), -1, -1, 0))
+                else:
+                    data.append((
+                        float(item.replace('c_', '').replace('.png', '')),
+                        *pixel_to_3d(*pixel, depth),
+                    ))
 
         data = np.array(data)
 
