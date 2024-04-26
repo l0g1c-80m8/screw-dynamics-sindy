@@ -100,6 +100,7 @@ def get_pixel(filepath, subdir):
             if not 340 <= centroid[0] <= 420 and not 200 <= centroid[1] <= 260:
                 out_of_bounds = 1
                 if args.check_images:
+                    cv2.rectangle(result, (340, 200), (420, 260), (255, 0, 0), 2)  # Blue color, thickness=2
                     print(filepath)
                     cv2.imshow(filepath, result)
                     cv2.waitKey(0)
