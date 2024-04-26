@@ -163,7 +163,7 @@ def get_depth(filepath, pixel):
     x, y = pixel
     block = depth_image[max(0, y - 2):min(depth_image.shape[0], y + 2), max(0, x - 2):min(depth_image.shape[1], x + 2)]
     average_depth = np.mean(block)
-    return average_depth / 1000.
+    return average_depth
 
 
 def write_to_file(data, filepath):
