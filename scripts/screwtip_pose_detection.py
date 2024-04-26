@@ -23,19 +23,21 @@ def get_args():
     return parser.parse_args()
 
 
-def get_pixel(filepath):
+def get_pixel(filepath, subdir):
     image = cv2.imread(filepath)
     hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-    filters = [
-        {"lower": np.array([0, 50, 50]), "upper": np.array([10, 255, 100])},
-        {"lower": np.array([160, 50, 50]), "upper": np.array([179, 255, 100])},
-    ]
+    filter_map = {
+        '14_60_5_M5_1500': [
+            {"lower": np.array([0, 50, 50]), "upper": np.array([10, 255, 100])},
+            {"lower": np.array([160, 50, 50]), "upper": np.array([179, 255, 100])},
+        ]
+    }
 
     combined_mask = np.zeros_like(image[:, :, 0])
 
     # Apply each filter and perform bitwise OR operation
-    for filter_params in filters:
+    for filter_params in filter_map.get(subdir, filter_map['14_60_5_M5_1500']):
         mask = cv2.inRange(hsv_image, filter_params["lower"], filter_params["upper"])
         combined_mask = cv2.bitwise_or(combined_mask, mask)
 
@@ -178,7 +180,7 @@ def main():
             if not re.match(r'^c_\d+.\d+\.png$', item):
                 continue
             filepath = os.path.join(image_path, item)
-            result = get_pixel(filepath)
+            result = get_pixel(filepath, subdir)
 
             if result is None:
                 invalid_pixel_ctr += 1
