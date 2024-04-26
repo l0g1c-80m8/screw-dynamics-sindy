@@ -250,7 +250,6 @@ def main():
             print('out of bounds count is {} for dir {}'.format(out_of_bounds_ctr, subdir))
         #     print(data)
 
-        sys.exit(0)
 
 
 if __name__ == '__main__':
