@@ -34,12 +34,16 @@ def get_pixel(filepath, subdir):
         ],
         '5_30_5_M5_1500': [
             {"lower": np.array([120, 30, 80]), "upper": np.array([179, 255, 255])}
+        ],
+        '1_30_1_M4_500': [
+            {"lower": np.array([130, 30, 80]), "upper": np.array([179, 255, 255])}
         ]
     }
 
     boundary_map = {
         '14_60_5_M5_1500': ((340, 200), (420, 260)),
         '5_30_5_M5_1500': ((290, 200), (350, 260)),
+        '1_30_1_M4_500': ((290, 200), (350, 260)),
     }
 
     combined_mask = np.zeros_like(image[:, :, 0])
@@ -61,8 +65,9 @@ def get_pixel(filepath, subdir):
         # height, width = image.shape[:2]
         # center_x = width // 2
         # center_y = height // 2
-        center_x = boundary_map[subdir][0][0] + (boundary_map[subdir][1][0] - boundary_map[subdir][0][0]) / 2
-        center_y = boundary_map[subdir][0][1] + (boundary_map[subdir][1][1] - boundary_map[subdir][0][1]) / 2
+        (x_min, y_min), (x_max, y_max) = boundary_map.get(subdir, boundary_map['14_60_5_M5_1500'])
+        center_x = x_min / 2 + x_max / 2
+        center_y = y_min / 2 + y_max / 2
 
         # Initialize variables for closest contour and its distance to the center
         closest_contour = None
@@ -104,8 +109,6 @@ def get_pixel(filepath, subdir):
             cv2.circle(result, centroid, 1, (0, 0, 255), -1)
 
             out_of_bounds = 0
-
-            (x_min, y_min), (x_max, y_max) = boundary_map.get(subdir, boundary_map['14_60_5_M5_1500'])
 
             if not x_min <= centroid[0] <= x_max and not y_min <= centroid[1] <= y_max:
                 out_of_bounds = 1
