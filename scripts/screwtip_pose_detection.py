@@ -28,6 +28,10 @@ def get_pixel(filepath, subdir):
     hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
     filter_map = {
+        'default': [
+            {"lower": np.array([0, 50, 50]), "upper": np.array([10, 255, 100])},
+            {"lower": np.array([160, 50, 50]), "upper": np.array([179, 255, 100])},
+        ],
         '14_60_5_M5_1500': [
             {"lower": np.array([0, 50, 50]), "upper": np.array([10, 255, 100])},
             {"lower": np.array([160, 50, 50]), "upper": np.array([179, 255, 100])},
@@ -50,6 +54,7 @@ def get_pixel(filepath, subdir):
     }
 
     boundary_map = {
+        'default': ((380, 220), (400, 240)),
         '14_60_5_M5_1500': ((340, 200), (420, 260)),
         '5_30_5_M5_1500': ((290, 200), (350, 260)),
         '1_30_1_M4_500': ((290, 200), (350, 260)),
@@ -61,7 +66,7 @@ def get_pixel(filepath, subdir):
     combined_mask = np.zeros_like(image[:, :, 0])
 
     # Apply each filter and perform bitwise OR operation
-    for filter_params in filter_map.get(subdir, filter_map['14_60_5_M5_1500']):
+    for filter_params in filter_map.get(subdir, filter_map['default']):
         mask = cv2.inRange(hsv_image, filter_params["lower"], filter_params["upper"])
         combined_mask = cv2.bitwise_or(combined_mask, mask)
 
@@ -77,7 +82,7 @@ def get_pixel(filepath, subdir):
         # height, width = image.shape[:2]
         # center_x = width // 2
         # center_y = height // 2
-        (x_min, y_min), (x_max, y_max) = boundary_map.get(subdir, boundary_map['14_60_5_M5_1500'])
+        (x_min, y_min), (x_max, y_max) = boundary_map.get(subdir, boundary_map['default'])
         center_x = x_min / 2 + x_max / 2
         center_y = y_min / 2 + y_max / 2
 
