@@ -265,10 +265,10 @@ def main():
         total_invalid_pixel_ctr += invalid_pixel_ctr
         total_out_of_bounds_ctr += out_of_bounds_ctr
 
-        print()
-        print('total invalid pixel count is {} for dir {}'.format(total_invalid_pixel_ctr, subdir))
-        print('total invalid depth count is {} for dir {}'.format(total_invalid_depth_ctr, subdir))
-        print('total out of bounds count is {} for dir {}'.format(total_out_of_bounds_ctr, subdir))
+    print()
+    print('total invalid pixel count is {} for dir {}'.format(total_invalid_pixel_ctr, subdir))
+    print('total invalid depth count is {} for dir {}'.format(total_invalid_depth_ctr, subdir))
+    print('total out of bounds count is {} for dir {}'.format(total_out_of_bounds_ctr, subdir))
 
 
 if __name__ == '__main__':
