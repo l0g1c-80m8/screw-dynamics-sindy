@@ -174,23 +174,24 @@ def write_to_file(data, filepath):
 
 
 def fix_data(data):
-    invalid_indices = np.where((data[:, -2] == -1) | (data[:, -3] == -1))[0]
+    invalid_indices = np.where((data[:, 1] == -1) | (data[:, 2] == -1) | (data[:, 3] == -1))[0]
     for invalid_index in invalid_indices:
-        data[invalid_index, -3] = (
-                np.sum(data[max(0, invalid_index - 4):invalid_index, -3]) +
-                np.sum(data[invalid_index:min(invalid_index + 4, len(data)), -3]) /
-                8.
-        )
-        data[invalid_index, -2] = (
-                np.sum(data[max(0, invalid_index - 4):invalid_index, -2]) +
-                np.sum(data[invalid_index:min(invalid_index + 4, len(data)), -2]) /
-                8.
-        )
-        data[invalid_index, -1] = (
-                np.sum(data[max(0, invalid_index - 4):invalid_index, -1]) +
-                np.sum(data[invalid_index:min(invalid_index + 4, len(data)), -1]) /
-                8.
-        )
+        # data[invalid_index, -3] = (
+        #         np.sum(data[max(0, invalid_index - 4):invalid_index, -3]) +
+        #         np.sum(data[invalid_index:min(invalid_index + 4, len(data)), -3]) /
+        #         8.
+        # )
+        # data[invalid_index, -2] = (
+        #         np.sum(data[max(0, invalid_index - 4):invalid_index, -2]) +
+        #         np.sum(data[invalid_index:min(invalid_index + 4, len(data)), -2]) /
+        #         8.
+        # )
+        # data[invalid_index, -1] = (
+        #         np.sum(data[max(0, invalid_index - 4):invalid_index, -1]) +
+        #         np.sum(data[invalid_index:min(invalid_index + 4, len(data)), -1]) /
+        #         8.
+        # )
+        data[invalid_index, 1:] = np.array([np.nan, np.nan, np.nan])
 
     zero_indices = np.where(data[:, -1] == 0.0)[0]
     for zero_index in zero_indices:
