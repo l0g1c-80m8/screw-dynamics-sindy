@@ -212,6 +212,9 @@ def pixel_to_3d(pixel_x, pixel_y, depth, intrinsics_matrix=intrinsics_matrix_lef
 
 
 def main():
+    total_invalid_depth_ctr = 0
+    total_invalid_pixel_ctr = 0
+    total_out_of_bounds_ctr = 0
     for subdir in os.listdir(args.data_dir):
         print('processing {}...'.format(subdir))
         if not re.match(r'^\d{1,2}_\d{2}_\d{1,2}_M\d_\d{3,4}$', subdir):
@@ -256,7 +259,16 @@ def main():
             print('invalid pixel count is {} for dir {}'.format(invalid_pixel_ctr, subdir))
             print('invalid depth count is {} for dir {}'.format(invalid_depth_ctr, subdir))
             print('out of bounds count is {} for dir {}'.format(out_of_bounds_ctr, subdir))
-        #     print(data)
+            print()
+
+        total_invalid_depth_ctr += invalid_depth_ctr
+        total_invalid_pixel_ctr += invalid_pixel_ctr
+        total_out_of_bounds_ctr += out_of_bounds_ctr
+
+        print()
+        print('total invalid pixel count is {} for dir {}'.format(total_invalid_pixel_ctr, subdir))
+        print('total invalid depth count is {} for dir {}'.format(total_invalid_depth_ctr, subdir))
+        print('total out of bounds count is {} for dir {}'.format(total_out_of_bounds_ctr, subdir))
 
 
 if __name__ == '__main__':
