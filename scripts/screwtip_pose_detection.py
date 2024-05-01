@@ -241,7 +241,6 @@ def main():
                     invalid_depth_ctr += 1
                     data.append((float(item.replace('c_', '').replace('.png', '')), -1, -1, -1))
                 else:
-                else:
                     data.append((
                         float(item.replace('c_', '').replace('.png', '')),
                         *pixel_to_3d(*pixel, depth),
