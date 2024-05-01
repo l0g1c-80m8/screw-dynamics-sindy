@@ -266,9 +266,9 @@ def main():
         total_out_of_bounds_ctr += out_of_bounds_ctr
 
     print()
-    print('total invalid pixel count is {} for dir {}'.format(total_invalid_pixel_ctr, subdir))
-    print('total invalid depth count is {} for dir {}'.format(total_invalid_depth_ctr, subdir))
-    print('total out of bounds count is {} for dir {}'.format(total_out_of_bounds_ctr, subdir))
+    print('total invalid pixel count is {}'.format(total_invalid_pixel_ctr))
+    print('total invalid depth count is {}'.format(total_invalid_depth_ctr))
+    print('total out of bounds count is {}'.format(total_out_of_bounds_ctr))
 
 
 if __name__ == '__main__':
