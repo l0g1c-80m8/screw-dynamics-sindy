@@ -19,7 +19,7 @@ def get_args():
                         action='store', dest='data_dir', help='data directory')
     parser.add_argument('--out_dir', type=str, default='./data',
                         action='store', dest='out_dir', help='output directory')
-    parser.add_argument('--out_file', type=str, default='observation.csv',
+    parser.add_argument('--out_file', type=str, default='observation_data.csv',
                         action='store', dest='out_file', help='output file')
     parser.add_argument('--debug', type=bool, default=True,
                         action='store', dest='debug', help='debug images?')
@@ -240,6 +240,7 @@ def main():
                 if depth <= .0 and args.debug:
                     invalid_depth_ctr += 1
                     data.append((float(item.replace('c_', '').replace('.png', '')), -1, -1, -1))
+                else:
                 else:
                     data.append((
                         float(item.replace('c_', '').replace('.png', '')),
