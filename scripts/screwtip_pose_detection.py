@@ -21,6 +21,8 @@ def get_args():
                         action='store', dest='out_dir', help='output directory')
     parser.add_argument('--out_file', type=str, default='observation_data.csv',
                         action='store', dest='out_file', help='output file')
+    parser.add_argument('--raw_out_file', type=str, default='observation_data.csv',
+                        action='store', dest='raw_out_file', help='raw output file')
     parser.add_argument('--debug', type=bool, default=True,
                         action='store', dest='debug', help='debug images?')
     parser.add_argument('--check_images', type=bool, default=False,
@@ -224,10 +226,11 @@ def main():
         image_path = os.path.join(subdir_path, 'camera')
 
         data = []
+        raw_data = []
         invalid_depth_ctr = 0
         invalid_pixel_ctr = 0
         out_of_bounds_ctr = 0
-        for item in os.listdir(image_path):
+        for item in sorted(os.listdir(image_path)):
             if not re.match(r'^c_\d+.\d+\.png$', item):
                 continue
             filepath = os.path.join(image_path, item)
@@ -237,6 +240,7 @@ def main():
                 invalid_pixel_ctr += 1
                 invalid_depth_ctr += 1
                 data.append((float(item.replace('c_', '').replace('.png', '')), -1, -1, -1))
+                raw_data.append((float(item.replace('c_', '').replace('.png', '')), -1, -1, -1))
             else:
                 pixel, out_of_bounds = result
                 out_of_bounds_ctr += out_of_bounds
@@ -244,16 +248,20 @@ def main():
                 if depth <= .0 and args.debug:
                     invalid_depth_ctr += 1
                     data.append((float(item.replace('c_', '').replace('.png', '')), -1, -1, -1))
+                    raw_data.append((float(item.replace('c_', '').replace('.png', '')), -1, -1, -1))
                 else:
                     data.append((
                         float(item.replace('c_', '').replace('.png', '')),
                         *pixel_to_3d(*pixel, depth),
                     ))
+                    raw_data.append((float(item.replace('c_', '').replace('.png', '')), *pixel, depth))
 
         data = np.array(data)
+        raw_data = np.array(data)
 
         fix_data(data)
         write_to_file(data, os.path.join(subdir_path, args.out_file))
+        write_to_file(raw_data, os.path.join(subdir_path, args.raw_out_file))
 
         if args.debug:
             print('invalid pixel count is {} for dir {}'.format(invalid_pixel_ctr, subdir))
