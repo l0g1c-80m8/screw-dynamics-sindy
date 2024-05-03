@@ -21,7 +21,7 @@ def get_args():
                         action='store', dest='out_dir', help='output directory')
     parser.add_argument('--out_file', type=str, default='observation_data.csv',
                         action='store', dest='out_file', help='output file')
-    parser.add_argument('--raw_out_file', type=str, default='observation_data.csv',
+    parser.add_argument('--raw_out_file', type=str, default='raw_observation_data.csv',
                         action='store', dest='raw_out_file', help='raw output file')
     parser.add_argument('--debug', type=bool, default=True,
                         action='store', dest='debug', help='debug images?')
@@ -257,9 +257,10 @@ def main():
                     raw_data.append((float(item.replace('c_', '').replace('.png', '')), *pixel, depth))
 
         data = np.array(data)
-        raw_data = np.array(data)
+        raw_data = np.array(raw_data)
 
         fix_data(data)
+        fix_data(raw_data)
         write_to_file(data, os.path.join(subdir_path, args.out_file))
         write_to_file(raw_data, os.path.join(subdir_path, args.raw_out_file))
 
