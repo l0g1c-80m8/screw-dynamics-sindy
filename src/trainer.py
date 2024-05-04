@@ -1,6 +1,7 @@
 import torch
 from argparse import Namespace
 from torch.utils.data import DataLoader
+from torch.utils.tensorboard import SummaryWriter
 
 from src.dataloader import ScrewdrivingDataset
 from src.model import SindyModel
@@ -24,6 +25,8 @@ class Trainer:
         self._train_dataset_obj = ScrewdrivingDataset(mode='train', **kwargs)
         self._test_dataset_obj = ScrewdrivingDataset(mode='test', **kwargs)
         self._val_dataset_obj = ScrewdrivingDataset(mode='val', **kwargs)
+
+        self._writer = SummaryWriter()
 
     def train(self):
         train_data_loader = DataLoader(self._train_dataset_obj)
@@ -53,7 +56,9 @@ class Trainer:
                 self._optimizer.step()
                 current_train_loss += train_loss.item()
 
-            print('training loss: {}'.format(current_train_loss / len(train_data_loader.dataset)))
+            train_loss = current_train_loss / len(train_data_loader.dataset)
+            print('training loss: {}'.format(train_loss))
+            self._writer.add_scalar("Loss/train", train_loss, epoch)
 
             for batch, (x, x_dot) in enumerate(val_data_loader):
                 self._optimizer.zero_grad()
@@ -63,9 +68,13 @@ class Trainer:
                 train_loss = self._loss(x_dot, pred_x_dot)
                 current_val_loss += train_loss.item()
 
-            print('validation loss: {}'.format(current_train_loss / len(val_data_loader.dataset)))
+            val_loss = current_val_loss / len(val_data_loader.dataset)
+            print('validation loss: {}'.format(val_loss))
+            self._writer.add_scalar("Loss/val", val_loss, epoch)
 
             self._model.eval()
+
+        self._writer.close()
 
     def evaluate(self):
         test_data_loader = DataLoader(self._test_dataset_obj)
