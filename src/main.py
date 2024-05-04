@@ -11,10 +11,12 @@ def get_args():
     # set args
     parser.add_argument('--data_dir', type=str, default='./data',
                         action='store', dest='data_dir', help='data directory')
-    parser.add_argument('--sensor_file', type=str, default='sensor_data.csv',
-                        action='store', dest='sensor_file', help='sensor file name')
-    parser.add_argument('--observation_file', type=str, default='observation_data.csv',
-                        action='store', dest='observation_file', help='observation file name')
+    parser.add_argument('--train_file', type=str, default='train_data.csv',
+                        action='store', dest='train_file', help='train file name')
+    parser.add_argument('--val_file', type=str, default='val_data.csv',
+                        action='store', dest='val_file', help='val file name')
+    parser.add_argument('--test_file', type=str, default='test_data.csv',
+                        action='store', dest='test_file', help='test file name')
     parser.add_argument('--poly_order', type=int, default=3,
                         action='store', dest='poly_order', help='highest polynomial order in sindy library')
     parser.add_argument('--include_constant', type=bool, default=True,
@@ -33,12 +35,6 @@ def get_args():
                         action='store', dest='weight_decay', help='weight decay for training')
     parser.add_argument('--epochs', type=int, default=100,
                         action='store', dest='epochs', help='epochs for training')
-    parser.add_argument('--train_dataset_subdir', type=str, default='train',
-                        action='store', dest='train_dataset_subdir', help='subdirectory for training dataset')
-    parser.add_argument('--test_dataset_subdir', type=str, default='test',
-                        action='store', dest='test_dataset_subdir', help='subdirectory for testing dataset')
-    parser.add_argument('--val_dataset_subdir', type=str, default='val',
-                        action='store', dest='val_dataset_subdir', help='subdirectory for validation dataset')
 
     # return parsed arguments
     return parser.parse_args()
