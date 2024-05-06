@@ -1,3 +1,5 @@
+import numpy as np
+import matplotlib.pyplot as plt
 import torch
 from argparse import Namespace
 from torch.utils.data import DataLoader
@@ -82,6 +84,42 @@ class Trainer:
         self._model.eval()
         print('Coefficients: {}'.format(self._model.coefficients))
 
-        pred_x_dot = self._model(x)
+        pred_x_dot = self._model(x).detach().cpu().numpy()
+        x, x_dot = x.detach().cpu().numpy(), x_dot.detach().cpu().numpy()
 
-        # TODO: do something with the predicted values
+        x = np.reshape(x, (self._params.window_length, self._params.input_var_dim))
+        x_dot = np.reshape(x_dot, (self._params.window_length, 3))
+        pred_x_dot = np.reshape(pred_x_dot, (self._params.window_length, 3))
+
+        timestamps = np.arange(0, len(pred_x_dot[:, 0]))
+        plt.figure(1)
+        plt.subplot(221)
+        plt.plot(timestamps, pred_x_dot[:, 0], 'b')
+
+        plt.subplot(222)
+        plt.plot(timestamps, x_dot[:, 0], 'g')
+
+        plt.subplot(223)
+        plt.plot(timestamps, x[:, 0], 'r')
+
+        plt.figure(2)
+        plt.subplot(221)
+        plt.plot(timestamps, pred_x_dot[:, 1], 'b')
+
+        plt.subplot(222)
+        plt.plot(timestamps, x_dot[:, 1], 'g')
+
+        plt.subplot(223)
+        plt.plot(timestamps, x[:, 1], 'r')
+
+        plt.figure(3)
+        plt.subplot(221)
+        plt.plot(timestamps, pred_x_dot[:, 2], 'b')
+
+        plt.subplot(222)
+        plt.plot(timestamps, x_dot[:, 2], 'g')
+
+        plt.subplot(223)
+        plt.plot(timestamps, x[:, 2], 'r')
+
+        plt.show()
