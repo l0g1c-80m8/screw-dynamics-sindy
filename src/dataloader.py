@@ -6,7 +6,6 @@ from torch.utils.data import Dataset
 
 
 class ScrewdrivingDataset(Dataset):
-    _WINDOW_LENGTH = 200
     _STIFFNESS_NORM = [3000, 3000, 3000, 300, 300, 300]
 
     def __init__(self, mode='train', **kwargs):
@@ -15,6 +14,7 @@ class ScrewdrivingDataset(Dataset):
         self._X = []
         self._y = []
         self._data_file = os.path.join(kwargs['data_dir'], kwargs['{}_file'.format(mode)])
+        self._window_length = kwargs['window_length']
 
         # read data
         self._init_data()
@@ -22,9 +22,9 @@ class ScrewdrivingDataset(Dataset):
     def _init_data(self):
         df = pd.read_csv(self._data_file)
 
-        for idx in range(df.shape[0] // self._WINDOW_LENGTH):
-            s_idx = idx * self._WINDOW_LENGTH
-            e_idx = s_idx + self._WINDOW_LENGTH
+        for idx in range(df.shape[0] // self._window_length):
+            s_idx = idx * self._window_length
+            e_idx = s_idx + self._window_length
 
             timestamps = np.asarray(df[s_idx:e_idx]['time'], dtype=np.float64)
 
