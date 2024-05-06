@@ -161,6 +161,7 @@ cython_debug/
 
 # temp ignore screwdriving model experiment data
 **/Screwdriving Model Experiments/
+**/sindy-data/
 
 # ignore tensorboard logs
 runs/
