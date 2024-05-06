@@ -25,7 +25,7 @@ def get_args():
                         action='store', dest='raw_out_file', help='raw output file')
     parser.add_argument('--debug', type=bool, default=True,
                         action='store', dest='debug', help='debug images?')
-    parser.add_argument('--check_images', type=bool, default=True,
+    parser.add_argument('--check_images', type=bool, default=False,
                         action='store', dest='check_images', help='check sus images?')
 
     return parser.parse_args()
