@@ -90,35 +90,29 @@ class Trainer:
         x = np.reshape(x, (self._params.window_length, self._params.input_var_dim))
         x_dot = np.reshape(x_dot, (self._params.window_length, 3))
         pred_x_dot = np.reshape(pred_x_dot, (self._params.window_length, 3))
+        timestamps = np.arange(0, pred_x_dot.shape[0])
 
-        timestamps = np.arange(0, len(pred_x_dot[:, 0]))
         plt.figure(1)
         plt.subplot(221)
         plt.plot(timestamps, pred_x_dot[:, 0], 'b')
-
         plt.subplot(222)
         plt.plot(timestamps, x_dot[:, 0], 'g')
-
         plt.subplot(223)
         plt.plot(timestamps, x[:, 0], 'r')
 
         plt.figure(2)
         plt.subplot(221)
         plt.plot(timestamps, pred_x_dot[:, 1], 'b')
-
         plt.subplot(222)
         plt.plot(timestamps, x_dot[:, 1], 'g')
-
         plt.subplot(223)
         plt.plot(timestamps, x[:, 1], 'r')
 
         plt.figure(3)
         plt.subplot(221)
         plt.plot(timestamps, pred_x_dot[:, 2], 'b')
-
         plt.subplot(222)
         plt.plot(timestamps, x_dot[:, 2], 'g')
-
         plt.subplot(223)
         plt.plot(timestamps, x[:, 2], 'r')
 
