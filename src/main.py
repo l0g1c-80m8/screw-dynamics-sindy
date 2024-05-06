@@ -23,7 +23,7 @@ def get_args():
                         action='store', dest='include_constant', help='include constant function in sindy library')
     parser.add_argument('--use_sine', type=bool, default=True,
                         action='store', dest='use_sine', help='use sine function in sindy library')
-    parser.add_argument('--input_var_dim', type=int, default=15,
+    parser.add_argument('--input_var_dim', type=int, default=18,
                         action='store', dest='input_var_dim', help='dimension of input variable')
     parser.add_argument('--state_var_dim', type=int, default=3,
                         action='store', dest='state_var_dim', help='dimension of state variable')
