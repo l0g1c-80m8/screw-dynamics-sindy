@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import pandas as pd
-from argparse import Namespace
+from derivative import dxdt
 from torch.utils.data import Dataset
 
 
@@ -26,7 +26,22 @@ class ScrewdrivingDataset(Dataset):
             s_idx = idx * self._WINDOW_LENGTH
             e_idx = s_idx + self._WINDOW_LENGTH
 
-            state_data = np.column_stack((
+            timestamps = np.asarray(df[s_idx:e_idx]['time'], dtype=np.float64)
+
+            velocity_data = np.column_stack((
+                np.asarray(
+                    dxdt(np.asarray(df[s_idx:e_idx]['X'], dtype=np.float32), timestamps, kind='finite_difference', k=1),
+                    dtype=np.float32
+                ),
+                np.asarray(
+                    dxdt(np.asarray(df[s_idx:e_idx]['Y'], dtype=np.float32), timestamps, kind='finite_difference', k=1),
+                    dtype=np.float32),
+                np.asarray(
+                    dxdt(np.asarray(df[s_idx:e_idx]['Z'], dtype=np.float32), timestamps, kind='finite_difference', k=1),
+                    dtype=np.float32),
+            ))
+
+            position_data = np.column_stack((
                 np.asarray(df[s_idx:e_idx]['X'], dtype=np.float32),
                 np.asarray(df[s_idx:e_idx]['Y'], dtype=np.float32),
                 np.asarray(df[s_idx:e_idx]['Z'], dtype=np.float32),
@@ -57,11 +72,12 @@ class ScrewdrivingDataset(Dataset):
             ))
 
             self._X.append(np.column_stack((
+                position_data,  # input variable (X)
                 orientation_data,  # input variable (X)
                 stiffness_data,  # control variable (U)
                 damping_data  # control variable (U)
             )))
-            self._y.append(state_data)  # state variable
+            self._y.append(velocity_data)  # state variable
 
     def __len__(self):
         return len(self._y)
