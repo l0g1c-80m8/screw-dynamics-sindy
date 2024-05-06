@@ -25,7 +25,7 @@ def get_args():
                         action='store', dest='raw_out_file', help='raw output file')
     parser.add_argument('--debug', type=bool, default=True,
                         action='store', dest='debug', help='debug images?')
-    parser.add_argument('--check_images', type=bool, default=False,
+    parser.add_argument('--check_images', type=bool, default=True,
                         action='store', dest='check_images', help='check sus images?')
 
     return parser.parse_args()
@@ -68,6 +68,9 @@ def get_pixel(filepath, subdir):
         '6_30_6_M5_2500': [
             {"lower": np.array([130, 30, 80]), "upper": np.array([179, 255, 155])}
         ],
+        '9_30_9_M6_2500': [
+            {"lower": np.array([130, 30, 80]), "upper": np.array([179, 255, 155])}
+        ],
     }
 
     boundary_map = {
@@ -82,6 +85,7 @@ def get_pixel(filepath, subdir):
         '8_30_8_M6_1500': ((290, 200), (360, 260)),
         '3_30_3_M4_2500': ((290, 200), (360, 260)),
         '6_30_6_M5_2500': ((290, 200), (360, 260)),
+        '9_30_9_M6_2500': ((290, 200), (360, 260)),
     }
 
     combined_mask = np.zeros_like(image[:, :, 0])
