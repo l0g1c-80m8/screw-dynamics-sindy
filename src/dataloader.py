@@ -1,7 +1,6 @@
 import os
 import numpy as np
 import pandas as pd
-from derivative import dxdt
 from torch.utils.data import Dataset
 
 
@@ -29,16 +28,9 @@ class ScrewdrivingDataset(Dataset):
             timestamps = np.asarray(df[s_idx:e_idx]['time'], dtype=np.float64)
 
             velocity_data = np.column_stack((
-                np.asarray(
-                    dxdt(np.asarray(df[s_idx:e_idx]['X'], dtype=np.float32), timestamps, kind='finite_difference', k=1),
-                    dtype=np.float32
-                ),
-                np.asarray(
-                    dxdt(np.asarray(df[s_idx:e_idx]['Y'], dtype=np.float32), timestamps, kind='finite_difference', k=1),
-                    dtype=np.float32),
-                np.asarray(
-                    dxdt(np.asarray(df[s_idx:e_idx]['Z'], dtype=np.float32), timestamps, kind='finite_difference', k=1),
-                    dtype=np.float32),
+                np.asarray(df['Vx'][s_idx:e_idx], dtype=np.float32) / np.pi,
+                np.asarray(df['Vy'][s_idx:e_idx], dtype=np.float32) / np.pi,
+                np.asarray(df['Vz'][s_idx:e_idx], dtype=np.float32) / np.pi
             ))
 
             position_data = np.column_stack((
