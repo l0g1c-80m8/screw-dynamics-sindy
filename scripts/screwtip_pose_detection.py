@@ -63,7 +63,7 @@ def get_pixel(filepath, subdir):
             {"lower": np.array([130, 30, 80]), "upper": np.array([179, 255, 155])}
         ],
         '3_30_3_M4_2500': [
-            {"lower": np.array([130, 30, 80]), "upper": np.array([179, 255, 155])}
+            {"lower": np.array([120, 30, 60]), "upper": np.array([179, 255, 155])}
         ],
         '6_30_6_M5_2500': [
             {"lower": np.array([130, 30, 80]), "upper": np.array([179, 255, 155])}
@@ -222,6 +222,7 @@ def main():
     total_invalid_pixel_ctr = 0
     total_out_of_bounds_ctr = 0
     for subdir in os.listdir(args.data_dir):
+        subdir = '3_30_3_M4_2500'
         print('processing {}...'.format(subdir))
         if not re.match(r'^\d{1,2}_\d{2}_\d{1,2}_M\d_\d{3,4}$', subdir):
             continue
@@ -279,6 +280,8 @@ def main():
         total_invalid_depth_ctr += invalid_depth_ctr
         total_invalid_pixel_ctr += invalid_pixel_ctr
         total_out_of_bounds_ctr += out_of_bounds_ctr
+
+        break
 
     print()
     print('total invalid pixel count is {}'.format(total_invalid_pixel_ctr))
