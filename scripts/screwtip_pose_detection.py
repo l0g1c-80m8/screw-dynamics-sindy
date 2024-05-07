@@ -227,6 +227,8 @@ def main():
             continue
 
         subdir_path = os.path.join(args.data_dir, subdir)
+        subdir_out_path = os.path.join(args.out_dir, subdir)
+        os.makedirs(subdir_out_path, exist_ok=True)
         image_path = os.path.join(subdir_path, 'camera')
 
         data = []
@@ -265,8 +267,8 @@ def main():
 
         fix_data(data)
         fix_data(raw_data)
-        write_to_file(data, os.path.join(subdir_path, args.out_file))
-        write_to_file(raw_data, os.path.join(subdir_path, args.raw_out_file))
+        write_to_file(data, os.path.join(subdir_out_path, args.out_file))
+        write_to_file(raw_data, os.path.join(subdir_out_path, args.raw_out_file))
 
         if args.debug:
             print('invalid pixel count is {} for dir {}'.format(invalid_pixel_ctr, subdir))
