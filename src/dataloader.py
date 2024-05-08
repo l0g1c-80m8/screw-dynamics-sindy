@@ -30,13 +30,13 @@ class ScrewdrivingDataset(Dataset):
             velocity_data = np.column_stack((
                 np.asarray(df['Vx'][s_idx:e_idx], dtype=np.float32) / np.pi,
                 np.asarray(df['Vy'][s_idx:e_idx], dtype=np.float32) / np.pi,
-                np.asarray(df['Vz'][s_idx:e_idx], dtype=np.float32) / np.pi
+                # np.asarray(df['Vz'][s_idx:e_idx], dtype=np.float32) / np.pi
             ))
 
             position_data = np.column_stack((
                 np.asarray(df[s_idx:e_idx]['X'], dtype=np.float32),
                 np.asarray(df[s_idx:e_idx]['Y'], dtype=np.float32),
-                np.asarray(df[s_idx:e_idx]['Z'], dtype=np.float32),
+                # np.asarray(df[s_idx:e_idx]['Z'], dtype=np.float32),
             ))
 
             orientation_data = np.column_stack((

@@ -88,8 +88,8 @@ class Trainer:
         x, x_dot = x.detach().cpu().numpy(), x_dot.detach().cpu().numpy()
 
         x = np.reshape(x, (self._params.window_length, self._params.input_var_dim))
-        x_dot = np.reshape(x_dot, (self._params.window_length, 3))
-        pred_x_dot = np.reshape(pred_x_dot, (self._params.window_length, 3))
+        x_dot = np.reshape(x_dot, (self._params.window_length, self._params.state_var_dim))
+        pred_x_dot = np.reshape(pred_x_dot, (self._params.window_length, self._params.state_var_dim))
         timestamps = np.arange(0, pred_x_dot.shape[0])
 
         plt.figure(1)
@@ -108,12 +108,12 @@ class Trainer:
         plt.subplot(223)
         plt.plot(timestamps, x[:, 1], 'r')
 
-        plt.figure(3)
-        plt.subplot(221)
-        plt.plot(timestamps, pred_x_dot[:, 2], 'b')
-        plt.subplot(222)
-        plt.plot(timestamps, x_dot[:, 2], 'g')
-        plt.subplot(223)
-        plt.plot(timestamps, x[:, 2], 'r')
+        # plt.figure(3)
+        # plt.subplot(221)
+        # plt.plot(timestamps, pred_x_dot[:, 2], 'b')
+        # plt.subplot(222)
+        # plt.plot(timestamps, x_dot[:, 2], 'g')
+        # plt.subplot(223)
+        # plt.plot(timestamps, x[:, 2], 'r')
 
         plt.show()

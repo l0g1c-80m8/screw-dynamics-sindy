@@ -17,24 +17,29 @@ def get_args():
                         action='store', dest='val_file', help='val file name')
     parser.add_argument('--test_file', type=str, default='test_data.csv',
                         action='store', dest='test_file', help='test file name')
+
     parser.add_argument('--poly_order', type=int, default=3,
                         action='store', dest='poly_order', help='highest polynomial order in sindy library')
     parser.add_argument('--include_constant', type=bool, default=True,
                         action='store', dest='include_constant', help='include constant function in sindy library')
     parser.add_argument('--use_sine', type=bool, default=True,
                         action='store', dest='use_sine', help='use sine function in sindy library')
-    parser.add_argument('--input_var_dim', type=int, default=18,
+
+    parser.add_argument('--input_var_dim', type=int, default=17,
                         action='store', dest='input_var_dim', help='dimension of input variable')
-    parser.add_argument('--state_var_dim', type=int, default=3,
+    parser.add_argument('--state_var_dim', type=int, default=2,
                         action='store', dest='state_var_dim', help='dimension of state variable')
+
     parser.add_argument('--device', type=str, default='cpu',
                         action='store', dest='device', help='device to run operations on')
+
     parser.add_argument('--learning_rate', type=float, default=.0001,
                         action='store', dest='learning_rate', help='learning rate for training')
     parser.add_argument('--weight_decay', type=float, default=.000001,
                         action='store', dest='weight_decay', help='weight decay for training')
     parser.add_argument('--epochs', type=int, default=500,
                         action='store', dest='epochs', help='epochs for training')
+
     parser.add_argument('--window_length', type=int, default=200,
                         action='store', dest='window_length', help='batch window size')
 
