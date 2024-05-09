@@ -51,7 +51,7 @@ def get_args():
 
 
 def main():
-    os.makedirs(ARGS.data_dir, exist_ok=True)
+    os.makedirs(ARGS.out_dir, exist_ok=True)
 
     trainer = Trainer(**vars(ARGS))
     trainer.train()
