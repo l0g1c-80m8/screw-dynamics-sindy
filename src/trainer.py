@@ -15,7 +15,8 @@ class Trainer:
 
         self._model = SindyModel(**kwargs)
 
-        torch.device(self._params.device)
+        self._device = torch.device(self._params.device)
+        self._model.to(self._device)
 
         self._optimizer = torch.optim.Adam(
             params=self._model.parameters(),
@@ -34,86 +35,84 @@ class Trainer:
         train_data_loader = DataLoader(self._train_dataset_obj)
         val_data_loader = DataLoader(self._val_dataset_obj)
 
-        self._model.to(torch.device(self._params.device))
-        self._model.get_latent_params = True
+        self._model.train()
 
         for epoch in range(self._params.epochs):
-            print('training epoch: {}'.format(epoch + 1))
+            print('Training epoch: {}'.format(epoch + 1))
 
-            self._model.train()
+            current_train_loss, current_val_loss = 0., 0.
 
-            current_train_loss = 0.
-            current_val_loss = 0.
+            for x, x_dot in train_data_loader:
+                x, x_dot = x.to(self._device), x_dot.to(self._device)
 
-            for batch, (x, x_dot) in enumerate(train_data_loader):
                 self._optimizer.zero_grad()
                 pred_x_dot = self._model(x)
-
-                x_dot = x_dot.to(torch.device(self._params.device))
-                train_loss = self._loss(x_dot, pred_x_dot)
-
-                self._model.zero_grad()
+                train_loss = self._loss(pred_x_dot, x_dot)
                 train_loss.backward()
-
                 self._optimizer.step()
+
                 current_train_loss += train_loss.item()
 
-            train_loss = current_train_loss / len(train_data_loader.dataset)
-            print('training loss: {}'.format(train_loss))
+            train_loss = current_train_loss / len(train_data_loader)
+            print('Training loss: {}'.format(train_loss))
             self._writer.add_scalar("Loss/train", train_loss, epoch)
 
-            for batch, (x, x_dot) in enumerate(val_data_loader):
-                self._optimizer.zero_grad()
-                pred_x_dot = self._model(x)
+            with torch.no_grad():
+                self._model.eval()
+                for x, x_dot in val_data_loader:
+                    x, x_dot = x.to(self._device), x_dot.to(self._device)
+                    pred_x_dot = self._model(x)
+                    val_loss = self._loss(pred_x_dot, x_dot)
+                    current_val_loss += val_loss.item()
 
-                x_dot = x_dot.to(torch.device(self._params.device))
-                val_loss = self._loss(x_dot, pred_x_dot)
-                current_val_loss += val_loss.item()
+                val_loss = current_val_loss / len(val_data_loader)
+                print('Validation loss: {}'.format(val_loss))
+                self._writer.add_scalar("Loss/val", val_loss, epoch)
 
-            val_loss = current_val_loss / len(val_data_loader.dataset)
-            print('validation loss: {}'.format(val_loss))
-            self._writer.add_scalar("Loss/val", val_loss, epoch)
-
-            self._model.eval()
+            self._model.train()
 
         self._writer.close()
 
     def evaluate(self):
         test_data_loader = DataLoader(self._test_dataset_obj)
-        x, x_dot = next(iter(test_data_loader))
+        current_test_loss = 0.
+
+        d_x, d_x_dot, d_pred_x_dot = [], [], []
+
         self._model.eval()
+        with torch.no_grad():
+            for x, x_dot in test_data_loader:
+                x, x_dot = x.to(self._device), x_dot.to(self._device)
+                pred_x_dot = self._model(x)
+
+                d_x.extend(x.cpu().numpy())
+                d_x_dot.extend(x_dot.cpu().numpy())
+                d_pred_x_dot.extend(pred_x_dot.cpu().numpy())
+
+                test_loss = self._loss(pred_x_dot, x_dot)
+                current_test_loss += test_loss.item()
+
+        d_x = np.array(d_x)
+        d_x_dot = np.array(d_x_dot)
+        d_pred_x_dot = np.array(d_pred_x_dot)
+
+        print('Test loss: {}'.format(current_test_loss))
         print('Coefficients: {}'.format(self._model.coefficients))
 
-        pred_x_dot = self._model(x).detach().cpu().numpy()
-        x, x_dot = x.detach().cpu().numpy(), x_dot.detach().cpu().numpy()
+        timestamps = np.arange(0, len(d_pred_x_dot))
 
-        x = np.reshape(x, (self._params.window_length, self._params.input_var_dim))
-        x_dot = np.reshape(x_dot, (self._params.window_length, self._params.state_var_dim))
-        pred_x_dot = np.reshape(pred_x_dot, (self._params.window_length, self._params.state_var_dim))
-        timestamps = np.arange(0, pred_x_dot.shape[0])
+        plt.figure(figsize=(10, 6))
 
-        plt.figure(1)
-        plt.subplot(221)
-        plt.plot(timestamps, pred_x_dot[:, 0], 'b')
-        plt.subplot(222)
-        plt.plot(timestamps, x_dot[:, 0], 'g')
-        plt.subplot(223)
-        plt.plot(timestamps, x[:, 0], 'r')
+        for i in range(d_x.shape[1]):
+            plt.subplot(2, d_x.shape[1], i + 1)
+            plt.plot(timestamps, d_pred_x_dot[:, i], 'b', label='Predicted')
+            plt.plot(timestamps, d_x_dot[:, i], 'g', label='Actual')
+            plt.title(f'Variable {i+1}')
+            plt.legend()
 
-        plt.figure(2)
-        plt.subplot(221)
-        plt.plot(timestamps, pred_x_dot[:, 1], 'b')
-        plt.subplot(222)
-        plt.plot(timestamps, x_dot[:, 1], 'g')
-        plt.subplot(223)
-        plt.plot(timestamps, x[:, 1], 'r')
+            plt.subplot(2, d_x.shape[1], i + 1 + d_x.shape[1])
+            plt.plot(timestamps, d_x[:, i], 'r')
+            plt.title(f'Input {i+1}')
 
-        # plt.figure(3)
-        # plt.subplot(221)
-        # plt.plot(timestamps, pred_x_dot[:, 2], 'b')
-        # plt.subplot(222)
-        # plt.plot(timestamps, x_dot[:, 2], 'g')
-        # plt.subplot(223)
-        # plt.plot(timestamps, x[:, 2], 'r')
-
+        plt.tight_layout()
         plt.show()

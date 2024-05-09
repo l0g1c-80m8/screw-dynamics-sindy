@@ -40,7 +40,7 @@ def get_args():
     parser.add_argument('--epochs', type=int, default=500,
                         action='store', dest='epochs', help='epochs for training')
 
-    parser.add_argument('--window_length', type=int, default=200,
+    parser.add_argument('--window_length', type=int, default=300,
                         action='store', dest='window_length', help='batch window size')
 
     # return parsed arguments
