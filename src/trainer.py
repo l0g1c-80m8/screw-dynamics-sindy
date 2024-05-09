@@ -67,8 +67,8 @@ class Trainer:
                 pred_x_dot = self._model(x)
 
                 x_dot = x_dot.to(torch.device(self._params.device))
-                train_loss = self._loss(x_dot, pred_x_dot)
-                current_val_loss += train_loss.item()
+                val_loss = self._loss(x_dot, pred_x_dot)
+                current_val_loss += val_loss.item()
 
             val_loss = current_val_loss / len(val_data_loader.dataset)
             print('validation loss: {}'.format(val_loss))
