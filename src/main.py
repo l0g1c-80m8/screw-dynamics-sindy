@@ -1,4 +1,5 @@
 import argparse
+import os
 import sys
 
 from src.trainer import Trainer
@@ -11,6 +12,8 @@ def get_args():
     # set args
     parser.add_argument('--data_dir', type=str, default='./data',
                         action='store', dest='data_dir', help='data directory')
+    parser.add_argument('--out_dir', type=str, default='./out',
+                        action='store', dest='out_dir', help='output directory')
     parser.add_argument('--train_file', type=str, default='train_data.csv',
                         action='store', dest='train_file', help='train file name')
     parser.add_argument('--val_file', type=str, default='val_data.csv',
@@ -48,6 +51,8 @@ def get_args():
 
 
 def main():
+    os.makedirs(ARGS.data_dir)
+
     trainer = Trainer(**vars(ARGS))
     trainer.train()
     trainer.evaluate()
