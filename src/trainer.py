@@ -118,7 +118,7 @@ class Trainer:
 
         timestamps = np.arange(0, d_x.shape[0])
 
-        plt.figure(figsize=(50, 30))
+        plt.figure(figsize=(20, 12))
 
         for idx in range(d_x_dot.shape[1]):
             plt.subplot(2, 2, idx + 1)
