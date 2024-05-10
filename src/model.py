@@ -15,7 +15,7 @@ class SindyModel(nn.Module):
         self._library_dim = None
 
         self._model_params = torch.nn.ParameterDict({
-            self._COFF_KEY: torch.nn.Parameter(torch.empty(self.library_dim, self._params.state_var_dim))
+            self._COFF_KEY: torch.nn.Parameter(torch.randn(self.library_dim, self._params.state_var_dim))
         })
         torch.nn.init.xavier_uniform_(self._model_params[self._COFF_KEY])
 
