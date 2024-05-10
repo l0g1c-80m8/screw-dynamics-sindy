@@ -82,7 +82,7 @@ class Trainer:
         test_data_loader = DataLoader(self._test_dataset_obj)
         current_test_loss = 0.
 
-        d_x, d_x_dot, d_pred_x_dot = [], [], []
+        d_x, d_pred_x, d_x_dot, d_pred_x_dot = [], [], [], []
 
         self._model.eval()
         with torch.no_grad():
@@ -101,6 +101,14 @@ class Trainer:
         d_x_dot = np.array(d_x_dot).reshape(self._params.window_length, self._params.state_var_dim)
         d_pred_x_dot = np.array(d_pred_x_dot).reshape(self._params.window_length, self._params.state_var_dim)
 
+        d_pred_x = [d_x[0, :2].tolist()]
+        for idx in range(len(d_x) - 1):
+            d_pred_x.append([
+                d_pred_x[-1][0] + d_pred_x_dot[idx, 0],
+                d_pred_x[-1][1] + d_pred_x_dot[idx, 1],  # Corrected index here
+            ])
+        d_pred_x = np.array(d_pred_x)
+
         print('Test loss: {}'.format(current_test_loss))
         print('Coefficients: {}'.format(self._model.coefficients))
 
@@ -109,12 +117,18 @@ class Trainer:
         plt.figure(figsize=(50, 30))
 
         for idx in range(d_x_dot.shape[1]):
-            plt.subplot(3, d_x_dot.shape[1], idx + 1)
+            plt.subplot(2, 2, idx + 1)
             plt.plot(timestamps, d_pred_x_dot[:, idx], 'b', label='Predicted')
             plt.plot(timestamps, d_x_dot[:, idx], 'g', label='Actual')
-            plt.title(f'Variable {idx + 1} (0: Vx, 1: Vy)')
+            plt.title(f'Velocity V{idx + 1} (V0: Vx, V1: Vy)')
             plt.legend()
 
-        plt.tight_layout()
+            plt.subplot(2, 2, idx + 3)
+            plt.plot(timestamps, d_pred_x[:, idx], 'b', label='Predicted')
+            plt.plot(timestamps, d_x[:, idx], 'g', label='Actual')
+            plt.title(f'Position {idx + 1} (P0: Px, P1: Py)')
+            plt.legend()
+
+        plt.subplots_adjust(wspace=0.5, hspace=0.5)
         plt.savefig(os.path.join(self._params.out_dir, 'test_loss_compare_{}.png'.format(datetime.now())))
         plt.show()
