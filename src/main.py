@@ -40,7 +40,7 @@ def get_args():
                         action='store', dest='learning_rate', help='learning rate for training')
     parser.add_argument('--weight_decay', type=float, default=.000001,
                         action='store', dest='weight_decay', help='weight decay for training')
-    parser.add_argument('--epochs', type=int, default=300,
+    parser.add_argument('--epochs', type=int, default=60,
                         action='store', dest='epochs', help='epochs for training')
 
     parser.add_argument('--window_length', type=int, default=1,
