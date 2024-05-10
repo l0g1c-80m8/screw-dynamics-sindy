@@ -3,6 +3,7 @@ import os
 import matplotlib.pyplot as plt
 import torch
 from argparse import Namespace
+from datetime import datetime
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 
@@ -112,5 +113,5 @@ class Trainer:
             plt.legend()
 
         plt.tight_layout()
-        plt.savefig(os.path.join(self._params.out_dir, 'test_loss_compare.png'))
+        plt.savefig(os.path.join(self._params.out_dir, 'test_loss_compare_{}.png'.format(datetime.now())))
         plt.show()
