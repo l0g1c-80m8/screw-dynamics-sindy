@@ -1,4 +1,5 @@
 import numpy as np
+import os
 import matplotlib.pyplot as plt
 import torch
 from argparse import Namespace
@@ -92,27 +93,24 @@ class Trainer:
                 test_loss = self._loss(pred_x_dot, x_dot)
                 current_test_loss += test_loss.item()
 
-        d_x = np.array(d_x)
-        d_x_dot = np.array(d_x_dot)
-        d_pred_x_dot = np.array(d_pred_x_dot)
+        d_x = np.array(d_x).reshape(self._params.window_length, self._params.input_var_dim)
+        d_x_dot = np.array(d_x_dot).reshape(self._params.window_length, self._params.state_var_dim)
+        d_pred_x_dot = np.array(d_pred_x_dot).reshape(self._params.window_length, self._params.state_var_dim)
 
         print('Test loss: {}'.format(current_test_loss))
         print('Coefficients: {}'.format(self._model.coefficients))
 
-        timestamps = np.arange(0, len(d_pred_x_dot))
+        timestamps = np.arange(0, self._params.window_length)
 
-        plt.figure(figsize=(10, 6))
+        plt.figure(figsize=(50, 30))
 
-        for i in range(d_x.shape[1]):
-            plt.subplot(2, d_x.shape[1], i + 1)
-            plt.plot(timestamps, d_pred_x_dot[:, i], 'b', label='Predicted')
-            plt.plot(timestamps, d_x_dot[:, i], 'g', label='Actual')
-            plt.title(f'Variable {i+1}')
+        for idx in range(d_x_dot.shape[1]):
+            plt.subplot(3, d_x_dot.shape[1], idx + 1)
+            plt.plot(timestamps, d_pred_x_dot[:, idx], 'b', label='Predicted')
+            plt.plot(timestamps, d_x_dot[:, idx], 'g', label='Actual')
+            plt.title(f'Variable {idx + 1} (0: Vx, 1: Vy)')
             plt.legend()
 
-            plt.subplot(2, d_x.shape[1], i + 1 + d_x.shape[1])
-            plt.plot(timestamps, d_x[:, i], 'r')
-            plt.title(f'Input {i+1}')
-
         plt.tight_layout()
+        plt.savefig(os.path.join(self._params.out_dir, 'test_loss_compare.png'))
         plt.show()
