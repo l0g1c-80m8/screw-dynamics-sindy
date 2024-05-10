@@ -75,6 +75,9 @@ class Trainer:
 
         self._writer.close()
 
+        # save model
+        torch.save(self._model.state_dict(), os.path.join(self._params.out_dir, f'model_{datetime.now()}.pth'))
+
     def evaluate(self):
         test_data_loader = DataLoader(self._test_dataset_obj)
         current_test_loss = 0.
