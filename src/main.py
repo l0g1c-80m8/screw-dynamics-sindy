@@ -36,11 +36,11 @@ def get_args():
     parser.add_argument('--device', type=str, default='cpu',
                         action='store', dest='device', help='device to run operations on')
 
-    parser.add_argument('--learning_rate', type=float, default=.0001,
+    parser.add_argument('--learning_rate', type=float, default=.00001,
                         action='store', dest='learning_rate', help='learning rate for training')
     parser.add_argument('--weight_decay', type=float, default=.000001,
                         action='store', dest='weight_decay', help='weight decay for training')
-    parser.add_argument('--epochs', type=int, default=500,
+    parser.add_argument('--epochs', type=int, default=300,
                         action='store', dest='epochs', help='epochs for training')
 
     parser.add_argument('--window_length', type=int, default=1,
@@ -52,6 +52,8 @@ def get_args():
 
 def main():
     os.makedirs(ARGS.out_dir, exist_ok=True)
+    os.makedirs(os.path.join(ARGS.out_dir, 'checkpoints'), exist_ok=True)
+    os.makedirs(os.path.join(ARGS.out_dir, 'plots'), exist_ok=True)
 
     trainer = Trainer(**vars(ARGS))
     trainer.train()
