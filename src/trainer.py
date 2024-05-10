@@ -76,7 +76,11 @@ class Trainer:
         self._writer.close()
 
         # save model
-        torch.save(self._model.state_dict(), os.path.join(self._params.out_dir, f'model_{datetime.now()}.pth'))
+        torch.save(self._model.state_dict(), os.path.join(
+            self._params.out_dir,
+            'checkpoints',
+            f'model_{datetime.now()}.pth'
+        ))
 
     def evaluate(self):
         test_data_loader = DataLoader(self._test_dataset_obj)
@@ -97,9 +101,9 @@ class Trainer:
                 test_loss = self._loss(pred_x_dot, x_dot)
                 current_test_loss += test_loss.item()
 
-        d_x = np.array(d_x).reshape(self._params.window_length, self._params.input_var_dim)
-        d_x_dot = np.array(d_x_dot).reshape(self._params.window_length, self._params.state_var_dim)
-        d_pred_x_dot = np.array(d_pred_x_dot).reshape(self._params.window_length, self._params.state_var_dim)
+        d_x = np.vstack(d_x)
+        d_x_dot = np.vstack(d_x_dot)
+        d_pred_x_dot = np.vstack(d_pred_x_dot)
 
         d_pred_x = [d_x[0, :2].tolist()]
         for idx in range(len(d_x) - 1):
@@ -112,7 +116,7 @@ class Trainer:
         print('Test loss: {}'.format(current_test_loss))
         print('Coefficients: {}'.format(self._model.coefficients))
 
-        timestamps = np.arange(0, self._params.window_length)
+        timestamps = np.arange(0, d_x.shape[0])
 
         plt.figure(figsize=(50, 30))
 
@@ -130,5 +134,5 @@ class Trainer:
             plt.legend()
 
         plt.subplots_adjust(wspace=0.5, hspace=0.5)
-        plt.savefig(os.path.join(self._params.out_dir, 'test_loss_compare_{}.png'.format(datetime.now())))
+        plt.savefig(os.path.join(self._params.out_dir, 'plots', 'test_loss_compare_{}.png'.format(datetime.now())))
         plt.show()
