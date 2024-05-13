@@ -127,7 +127,7 @@ class Trainer:
             plt.subplot(2, 2, idx + 1)
             plt.plot(timestamps, d_pred_x_dot[:, idx], 'b', label='Predicted')
             plt.plot(timestamps, d_x_dot[:, idx], 'g', label='Actual')
-            plt.title(f'Velocity V{idx + 1} (V0: Vx, V1: Vy)')
+            plt.title(f'Velocity V{idx} (V0: Vx, V1: Vy)')
             plt.legend()
 
             plt.subplot(2, 2, idx + 3)
