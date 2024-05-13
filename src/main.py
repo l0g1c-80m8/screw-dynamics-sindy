@@ -5,7 +5,7 @@ import sys
 from src.trainer import Trainer
 
 
-def get_args():
+def get_args(arg_list=None):
     # define parser
     parser = argparse.ArgumentParser()
 
@@ -47,6 +47,8 @@ def get_args():
                         action='store', dest='window_length', help='batch window size')
 
     # return parsed arguments
+    if arg_list is None:
+        return parser.parse_args([])
     return parser.parse_args()
 
 
