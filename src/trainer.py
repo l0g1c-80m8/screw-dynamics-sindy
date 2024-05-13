@@ -82,7 +82,7 @@ class Trainer:
             f'model_{datetime.now()}.pth'
         ))
 
-    def evaluate(self):
+    def evaluate(self, graph=True, show_graph=True):
         test_data_loader = DataLoader(self._test_dataset_obj)
         current_test_loss = 0.
 
@@ -116,6 +116,9 @@ class Trainer:
         print('Test loss: {}'.format(current_test_loss))
         print('Coefficients: {}'.format(self._model.coefficients))
 
+        if not graph:
+            return
+
         timestamps = np.arange(0, d_x.shape[0])
 
         plt.figure(figsize=(20, 12))
@@ -135,4 +138,5 @@ class Trainer:
 
         plt.subplots_adjust(wspace=0.5, hspace=0.5)
         plt.savefig(os.path.join(self._params.out_dir, 'plots', 'test_loss_compare_{}.png'.format(datetime.now())))
-        plt.show()
+        if show_graph:
+            plt.show()
