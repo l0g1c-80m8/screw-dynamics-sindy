@@ -57,8 +57,6 @@ def main():
     os.makedirs(os.path.join(ARGS.out_dir, 'checkpoints'), exist_ok=True)
     os.makedirs(os.path.join(ARGS.out_dir, 'plots'), exist_ok=True)
 
-    print(vars(ARGS))
-
     trainer = Trainer(**vars(ARGS))
     trainer.train()
     trainer.evaluate()
