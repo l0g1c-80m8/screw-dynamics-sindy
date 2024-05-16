@@ -25,7 +25,7 @@ class Trainer:
             lr=self._params.learning_rate,
             weight_decay=self._params.weight_decay
         )
-        self._loss = torch.nn.MSELoss(reduction='mean')
+        self._loss = torch.nn.L1Loss(reduction='mean')
 
         self._train_dataset_obj = ScrewdrivingDataset(mode='train', **kwargs)
         self._test_dataset_obj = ScrewdrivingDataset(mode='test', **kwargs)

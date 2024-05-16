@@ -10,9 +10,9 @@ def get_args(arg_list=None):
     parser = argparse.ArgumentParser()
 
     # set args
-    parser.add_argument('--data_dir', type=str, default='./data',
+    parser.add_argument('--data_dir', type=str, default='./out/sindy-data',
                         action='store', dest='data_dir', help='data directory')
-    parser.add_argument('--out_dir', type=str, default='./out',
+    parser.add_argument('--out_dir', type=str, default='./out/sindy-model-out',
                         action='store', dest='out_dir', help='output directory')
     parser.add_argument('--train_file', type=str, default='train_data.csv',
                         action='store', dest='train_file', help='train file name')
@@ -56,6 +56,8 @@ def main():
     os.makedirs(ARGS.out_dir, exist_ok=True)
     os.makedirs(os.path.join(ARGS.out_dir, 'checkpoints'), exist_ok=True)
     os.makedirs(os.path.join(ARGS.out_dir, 'plots'), exist_ok=True)
+
+    print(vars(ARGS))
 
     trainer = Trainer(**vars(ARGS))
     trainer.train()
