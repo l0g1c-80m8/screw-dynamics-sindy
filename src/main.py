@@ -40,7 +40,7 @@ def get_args(arg_list=None):
                         action='store', dest='learning_rate', help='learning rate for training')
     parser.add_argument('--weight_decay', type=float, default=.000001,
                         action='store', dest='weight_decay', help='weight decay for training')
-    parser.add_argument('--epochs', type=int, default=100,
+    parser.add_argument('--epochs', type=int, default=50,
                         action='store', dest='epochs', help='epochs for training')
 
     parser.add_argument('--window_length', type=int, default=1,
@@ -67,7 +67,8 @@ if __name__ == '__main__':
     ARGS = get_args()
 
     # exec
-    main()
+    for _ in range(1000):
+        main()
 
     # exit without errors
     sys.exit()

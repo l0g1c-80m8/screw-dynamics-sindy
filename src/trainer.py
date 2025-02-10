@@ -73,6 +73,13 @@ class Trainer:
 
             self._model.train()
 
+            torch.save(self._model.state_dict(), os.path.join(
+                self._params.out_dir,
+                'checkpoints',
+                f'model_{datetime.now()}_epoch-{epoch}.pth'
+            ))
+            print(f'saved - model_{datetime.now()}_epoch-{epoch}.pth')
+
         self._writer.close()
 
         # save model
@@ -81,8 +88,9 @@ class Trainer:
             'checkpoints',
             f'model_{datetime.now()}.pth'
         ))
+        print(f'saved - model_{datetime.now()}.pth')
 
-    def evaluate(self, graph=True, show_graph=True):
+    def evaluate(self, graph=True, show_graph=False):
         test_data_loader = DataLoader(self._test_dataset_obj)
         current_test_loss = 0.
 
