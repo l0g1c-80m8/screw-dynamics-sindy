@@ -65,6 +65,17 @@ class ModelTrainer:
         return total_loss / len(val_loader)
 
 
+def run_training(model, model_name, train_loader, val_loader, device, learning_rate):
+    # Create optimizer and criterion for this model
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    criterion = torch.nn.MSELoss()
+    trainer = ModelTrainer(model, criterion, optimizer)
+    logger.info(f"Training {model_name} Model:\n{model}")
+    trainer.train(train_loader, val_loader, device)
+    final_loss = trainer.evaluate(val_loader, device)
+    return final_loss
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train a Black Box NN/GRU based model")
     parser.add_argument(
@@ -111,30 +122,30 @@ if __name__ == "__main__":
                         action='store', dest='window_length', help='batch window size')
 
     parser.add_argument("--epochs", type=int, default=1000, help="Input dimension")
-    logger.info(f"Arguments: {parser.parse_args()}")
-    logger.info(f"Make sure to set the correct model dimensions")
-    if parser.parse_args().model == "lstm":
-        model = LSTMModel(input_dim=17, hidden_dim=34, output_dim=2, num_layers=3)
-    else:
-        model = MLP(input_dim=17, hidden_dim=34, output_dim=2)
-
-    logger.info(f"Initialized Model with Following Params: {model}")
-
-    # Data
-    #####NOTE: Initialize your Data Loaders Here#####
     args = parser.parse_args()
+    logger.info(f"Arguments: {args}")
+    logger.info(f"Arguments: {parser.parse_args()}")
+
     train_loader = DataLoader(ScrewdrivingDataset(mode='train', **vars(args)))
     val_loader = DataLoader(ScrewdrivingDataset(mode='test', **vars(args)))
-    # self._val_dataset_obj = DataLoader(ScrewdrivingDataset(mode='val', **kwargs))
     assert train_loader is not None, "Train loader is None"
     assert val_loader is not None, "Validation loader is None"
-    ###############
 
-    # Loss and Optimizer
-    criterion = torch.nn.MSELoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
+    logger.info(f"Using device: {device}")
 
-    trainer = ModelTrainer(model, criterion, optimizer)
-    trainer.train(train_loader, val_loader, device)
+    # --- Train LSTM Model ---
+    lstm_model = LSTMModel(input_dim=17, hidden_dim=34, output_dim=2, num_layers=3)
+    lstm_model.to(device)
+    lstm_loss = run_training(lstm_model, "LSTM", train_loader, val_loader, device, args.learning_rate)
+
+    # --- Train MLP Model ---
+    # IMPORTANT: Ensure your MLP definition is corrected. For example, the second linear layer should accept hidden_dim as input.
+    mlp_model = MLP(input_dim=17, hidden_dim=34, output_dim=2)
+    mlp_model.to(device)
+    mlp_loss = run_training(mlp_model, "MLP", train_loader, val_loader, device, args.learning_rate)
+
+    # --- Print Final Outputs ---
+    print("\nFinal Evaluation Results:")
+    print(f"LSTM Model Final Validation Loss: {lstm_loss}")
+    print(f"MLP Model Final Validation Loss: {mlp_loss}")
