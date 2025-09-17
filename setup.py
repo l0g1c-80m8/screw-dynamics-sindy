@@ -47,12 +47,9 @@ setup(
     install_requires=requirements,
     extras_require={
         "dev": [
-            "pytest>=6.0.0",
-            "pytest-cov>=2.10.0",
             "black>=21.0.0",
             "flake8>=3.9.0",
             "isort>=5.9.0",
-            "pre-commit>=2.12.0",
         ],
         "notebooks": [
             "jupyter>=1.0.0",
@@ -66,7 +63,6 @@ setup(
     entry_points={
         "console_scripts": [
             "sindy-train=src.main:main",
-            "sindy-pose-detect=scripts.screwtip_pose_detection:main",
         ],
     },
     include_package_data=True,
