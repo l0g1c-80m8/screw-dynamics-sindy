@@ -1,0 +1,41 @@
+# Core dependencies
+torch>=1.9.0
+torchvision>=0.10.0
+numpy>=1.21.0
+pandas>=1.3.0
+scikit-learn>=1.0.0
+scipy>=1.7.0
+matplotlib>=3.4.0
+seaborn>=0.11.0
+
+# Computer vision
+opencv-python>=4.5.0
+
+# Jupyter and notebooks
+jupyter>=1.0.0
+ipykernel>=6.0.0
+ipywidgets>=7.6.0
+
+# Data processing
+h5py>=3.1.0
+pillow>=8.0.0
+
+# Logging and monitoring
+loguru>=0.5.0
+tqdm>=4.60.0
+wandb>=0.12.0
+
+# Optimization and scientific computing
+sympy>=1.8.0
+transforms3d>=0.3.1
+
+# Development dependencies (optional)
+pytest>=6.0.0
+black>=21.0.0
+flake8>=3.9.0
+isort>=5.9.0
+
+# ROS dependencies (if available)
+# rospy  # Install via ROS distribution
+# geometry_msgs  # Install via ROS distribution
+# sensor_msgs  # Install via ROS distribution

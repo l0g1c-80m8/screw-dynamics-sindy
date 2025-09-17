@@ -1,0 +1,155 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "screw-dynamics-sindy"
+version = "1.0.0"
+description = "Data-driven modeling of robotic screw-driving dynamics using SINDy framework"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Screw Dynamics SINDy Contributors"},
+]
+maintainers = [
+    {name = "l0g1c-80m8"},
+]
+keywords = [
+    "sindy",
+    "dynamics", 
+    "robotics",
+    "screw-driving",
+    "machine-learning",
+    "computer-vision",
+    "sparse-identification",
+    "pytorch",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Physics",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "torch>=1.9.0",
+    "torchvision>=0.10.0",
+    "numpy>=1.21.0",
+    "pandas>=1.3.0",
+    "scikit-learn>=1.0.0",
+    "scipy>=1.7.0",
+    "matplotlib>=3.4.0",
+    "seaborn>=0.11.0",
+    "opencv-python>=4.5.0",
+    "loguru>=0.5.0",
+    "tqdm>=4.60.0",
+    "h5py>=3.1.0",
+    "pillow>=8.0.0",
+    "sympy>=1.8.0",
+    "transforms3d>=0.3.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0.0",
+    "pytest-cov>=2.10.0",
+    "black>=21.0.0",
+    "flake8>=3.9.0",
+    "isort>=5.9.0",
+    "pre-commit>=2.12.0",
+]
+notebooks = [
+    "jupyter>=1.0.0",
+    "ipykernel>=6.0.0",
+    "ipywidgets>=7.6.0",
+]
+all = [
+    "screw-dynamics-sindy[dev,notebooks]",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/l0g1c-80m8/screw-dynamics-sindy"
+"Bug Tracker" = "https://github.com/l0g1c-80m8/screw-dynamics-sindy/issues"
+"Documentation" = "https://github.com/l0g1c-80m8/screw-dynamics-sindy#readme"
+"Source Code" = "https://github.com/l0g1c-80m8/screw-dynamics-sindy"
+"Changelog" = "https://github.com/l0g1c-80m8/screw-dynamics-sindy/blob/main/CHANGELOG.md"
+
+[project.scripts]
+sindy-train = "src.main:main"
+
+[tool.setuptools]
+packages = ["src", "baseline", "scripts"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"*" = ["*.md", "*.txt", "*.yml", "*.yaml"]
+"data" = ["*.csv", "*.png"]
+
+# Black configuration
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | archived
+)/
+'''
+
+# isort configuration
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["src", "baseline", "scripts"]
+known_third_party = ["torch", "numpy", "pandas", "opencv", "matplotlib"]
+
+# pytest configuration
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+# Coverage configuration
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "setup.py",
+    "archived/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
