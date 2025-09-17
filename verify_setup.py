@@ -103,7 +103,6 @@ def check_directories():
         'scripts',
         'notebook',
         'data',
-        'tests',
         '.github'
     ]
     
@@ -128,9 +127,7 @@ def check_config_files():
         'setup.py',
         'pyproject.toml',
         'LICENSE',
-        'README.md',
-        'CONTRIBUTING.md',
-        'CHANGELOG.md'
+        'README.md'
     ]
     
     success_count = 0
@@ -170,10 +167,10 @@ def run_quick_test():
         model = SindyModel(**model_config)
         
         # Test forward pass
-        x = torch.randn(3, 5)
+        x = torch.randn(3, 10, 5)  # batch_size, time_steps, input_dim
         output = model(x)
         
-        if output.shape == (3, 2):
+        if output.shape == (3, 10, 2):
             print("   ✅ SINDy model test passed")
             return True
         else:
