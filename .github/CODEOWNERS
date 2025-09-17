@@ -1,0 +1,26 @@
+# Global code owners
+* @l0g1c-80m8
+
+# Source code ownership
+/src/ @l0g1c-80m8
+/baseline/ @l0g1c-80m8
+/archived/ @l0g1c-80m8
+
+# Scripts and utilities
+/scripts/ @l0g1c-80m8
+
+# Notebooks and analysis
+/notebook/ @l0g1c-80m8
+
+# Data and documentation
+/data/ @l0g1c-80m8
+*.md @l0g1c-80m8
+
+# Configuration files
+*.yml @l0g1c-80m8
+*.yaml @l0g1c-80m8
+*.json @l0g1c-80m8
+*.toml @l0g1c-80m8
+
+# CI/CD and workflow files
+/.github/ @l0g1c-80m8
