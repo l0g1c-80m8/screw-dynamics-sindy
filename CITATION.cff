@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software in your research, please cite the accompanying paper."
+type: article
+authors:
+  - family-names: "Manyar"
+    given-names: "Omey M."
+  - family-names: "Patel"
+    given-names: "Rutvik"
+  - family-names: "Gupta"
+    given-names: "Satyandra K."
+title: "Autonomous robotic screwdriving for high-mix manufacturing"
+journal: "Robotics and Computer-Integrated Manufacturing"
+publisher: "Elsevier"
+volume: 98
+pages: 103172 # This is the article number
+year: 2026
+doi: 10.1016/j.rcim.2025.103172
+date-released: 2025-11-04
+url: "https://doi.org/10.1016/j.rcim.2025.103172"
