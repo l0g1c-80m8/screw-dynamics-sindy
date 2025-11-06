@@ -4,14 +4,26 @@ A computational framework for modeling robotic screw-driving dynamics using **Sp
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Quick Start](#quick-start)
-- [Repository Structure](#repository-structure)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Data Access](#data-access)
-- [Contributing](#contributing)
-- [License](#license)
+<!-- TOC -->
+* [Screw Dynamics SINDy](#screw-dynamics-sindy)
+  * [Table of Contents](#table-of-contents)
+  * [Overview](#overview)
+    * [Key Features](#key-features)
+  * [Quick Start](#quick-start)
+  * [Repository Structure](#repository-structure)
+  * [Installation](#installation)
+  * [Installation](#installation-1)
+    * [Prerequisites](#prerequisites)
+    * [Setup](#setup)
+  * [Usage](#usage)
+    * [Training Models](#training-models)
+    * [Data Processing](#data-processing)
+    * [Analysis](#analysis)
+  * [Data Access](#data-access)
+  * [Contributing](#contributing)
+  * [Citation](#citation)
+  * [License](#license)
+<!-- TOC -->
 
 ## Overview
 
@@ -115,7 +127,7 @@ Experimental data: [Google Sheets Dataset](https://docs.google.com/spreadsheets/
 3. Make your changes
 4. Submit a pull request
 
-## Cite
+## Citation
 
 > Manyar, O. M., Patel, R., & Gupta, S. K. (2026). Autonomous robotic screwdriving for high-mix manufacturing. Robotics and Computer-Integrated Manufacturing, 98, 103172. https://doi.org/10.1016/j.rcim.2025.103172
 
