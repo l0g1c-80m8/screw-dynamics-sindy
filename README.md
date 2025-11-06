@@ -115,7 +115,24 @@ Experimental data: [Google Sheets Dataset](https://docs.google.com/spreadsheets/
 3. Make your changes
 4. Submit a pull request
 
+## Cite
+
+> Manyar, O. M., Patel, R., & Gupta, S. K. (2026). Autonomous robotic screwdriving for high-mix manufacturing. Robotics and Computer-Integrated Manufacturing, 98, 103172. https://doi.org/10.1016/j.rcim.2025.103172
+
+```text
+@article{Manyar_Patel_Gupta_RCIM_2026,
+  author = {Manyar, Omey M. and Patel, Rutvik and Gupta, Satyandra K.},
+  title = {Autonomous robotic screwdriving for high-mix manufacturing},
+  journal = {Robotics and Computer-Integrated Manufacturing},
+  publisher = {Elsevier},
+  year = {2026},
+  volume = {98},
+  pages = {103172},
+  doi = {10.1016/j.rcim.2025.103172}
+}
+```
+
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
   
