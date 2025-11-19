@@ -9,6 +9,7 @@ A computational framework for modeling robotic screw-driving dynamics using **Sp
   * [Table of Contents](#table-of-contents)
   * [Overview](#overview)
     * [Key Features](#key-features)
+  * [Paper](#paper)
   * [Quick Start](#quick-start)
   * [Repository Structure](#repository-structure)
   * [Installation](#installation)
@@ -36,6 +37,12 @@ This project develops interpretable dynamical models for robotic screw-driving o
 - **Baseline models**: LSTM and MLP for performance comparison
 - **Data processing**: Collection and preprocessing utilities
 - **Analysis tools**: Jupyter notebooks for visualization
+
+## Paper
+
+**Research Paper**: [Link](https://www.researchgate.net/publication/397427698_Autonomous_Robotic_Screwdriving_for_High-Mix_Manufacturing)
+
+This work is documented in our research paper in detail. 
 
 ## Quick Start
 
